@@ -1,0 +1,16 @@
+name: EcoZero
+version: '${project.version}'
+main: studio.ecoprojects.ecozero.EcoZero
+description: EcoZero's main plugin
+api-version: '1.20'
+commands:
+  verify:
+    description: Verify your discord and minecraft account for rewards!
+  discorddashboard:
+    description: Admin panel for discord
+  balance:
+    aliases:
+      - bal
+    usage: /balance [<player>]
+    description: check your or someone else's balance
+

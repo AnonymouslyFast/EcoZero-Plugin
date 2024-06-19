@@ -1,0 +1,29 @@
+#
+# MADE BY: AnonymouslyFast (Caleb)
+#
+# Below is the configuration for the bot
+# If the '' is empty it need a input
+# please do not change anything unless needed
+#
+
+# Minecraft
+server-ip: ''
+server-name: ''
+
+# Discord
+bot-token: ''
+minecraft-to-discord-channel-id: ''
+minecraft-logs-channel-id: ''
+discord-verification-channel-id: ''
+discord-verified-role-id: ''
+guild-id: ''
+
+# Economy
+starting-balance: 500.0
+
+# DataBase
+db-username: ''
+db-password: ''
+# The Data base template is:
+#  jdbc:sqlserver://ServerName:Port;databaseName=;user=username;password=password;
+db-url: ''
