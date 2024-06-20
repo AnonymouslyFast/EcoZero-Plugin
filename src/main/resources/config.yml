@@ -20,6 +20,10 @@ guild-id: ''
 
 # Economy
 starting-balance: 500.0
+economy-prefix: '2&l[&a&lEconomy&2&l]'
+# Delay for saving (in minutes)
+# Have to restart if changed, can't use reload command for this.
+economy-saves-accounts-every: 10
 
 # DataBase
 db-username: ''

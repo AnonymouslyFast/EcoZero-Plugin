@@ -13,4 +13,10 @@ commands:
       - bal
     usage: /balance [<player>]
     description: check your or someone else's balance
+  economy:
+    aliases:
+      - eco
+    description: Admin command for economy
+  ecozero:
+    description: Admin command for EcoZero plugin
 

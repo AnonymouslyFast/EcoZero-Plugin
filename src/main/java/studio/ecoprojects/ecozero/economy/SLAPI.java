@@ -22,6 +22,7 @@ public class SLAPI {
 
     public static void saveAccounts() {
         for (UUID uuid : Economy.getBalanceKeySet()) {
+            EconomyDB.removeAccount(uuid.toString());
             EconomyDB.addAccount(uuid.toString(), Economy.getBalance(uuid));
         }
     }

@@ -1,5 +1,6 @@
 package studio.ecoprojects.ecozero;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -7,11 +8,15 @@ import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.slf4j.LoggerFactory;
+import studio.ecoprojects.ecozero.economy.SLAPI;
 import studio.ecoprojects.ecozero.economy.commands.BalanceCommand;
 import studio.ecoprojects.ecozero.discordintergration.BotEssentials;
 import studio.ecoprojects.ecozero.discordintergration.commands.minecraft.Verify;
+import studio.ecoprojects.ecozero.economy.commands.EconomyCommand;
 import studio.ecoprojects.ecozero.utils.DataBaseSetUp;
+import studio.ecoprojects.ecozero.utils.EcoZeroCommand;
 import studio.ecoprojects.ecozero.utils.EventUtils;
+import studio.ecoprojects.ecozero.utils.RandomUtils;
 
 public final class EcoZero extends JavaPlugin {
     public static Logger logger;
@@ -60,7 +65,33 @@ public final class EcoZero extends JavaPlugin {
             // Commands
             getCommand("verify").setExecutor(new Verify());
             getCommand("discorddashboard").setExecutor(new studio.ecoprojects.ecozero.discordintergration.commands.minecraft.DiscordDashboard());
+
             getCommand("balance").setExecutor(new BalanceCommand());
+            getCommand("balance").setTabCompleter(new BalanceCommand());
+
+            getCommand("economy").setExecutor(new EconomyCommand());
+            getCommand("economy").setTabCompleter(new EconomyCommand());
+
+            getCommand("ecozero").setExecutor(new EcoZeroCommand());
+            getCommand("ecozero").setTabCompleter(new EcoZeroCommand());
+
+            // Random
+            if (RandomUtils.getOfflinePlayersNames().isEmpty()) {
+                for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                    RandomUtils.addOfflinePlayerName(player.getName());
+                }
+            }
+
+            // Gets the minute number from config and calculates it to Minecraft ticks
+            long delay = 20L * (60L * getConfig().getInt("economy-saves-accounts-every"));
+            // Saves every account every x (delay) minutes
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+
+                @Override
+                public void run() {
+                    SLAPI.saveAccounts();
+                }
+            }, 0L, delay);
 
         } else {
             getLogger().severe("LUCKPERMS IS NEEDED FOR THIS PLUGIN: Please download Luckperms since it's needed");
@@ -74,6 +105,7 @@ public final class EcoZero extends JavaPlugin {
     }
 
     public void onDisable() {
+        SLAPI.saveAccounts();
         BotEssentials.stopBot();
     }
 }

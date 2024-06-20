@@ -2,6 +2,7 @@ package studio.ecoprojects.ecozero.economy;
 
 import org.bukkit.OfflinePlayer;
 import studio.ecoprojects.ecozero.EcoZero;
+import studio.ecoprojects.ecozero.economy.database.EconomyDB;
 
 import java.util.*;
 
@@ -15,15 +16,12 @@ public class Economy {
     }
 
     public static void setBalance(UUID uuid, Double value) {
-        balances.put(uuid, value);
-    }
+        if (hasAccount(uuid)) {
+            balances.replace(uuid, getBalance(uuid), value);
+        } else {
+            balances.put(uuid, value);
+        }
 
-    public static void addBalance(UUID uuid, Double value) {
-        balances.put(uuid, value + balances.get(uuid));
-    }
-
-    public static void removeBalance(OfflinePlayer player, Double value) {
-        balances.put(player.getUniqueId(), value - balances.get(player.getUniqueId()));
     }
 
     public static Boolean hasAccount(UUID uuid) {
@@ -31,7 +29,14 @@ public class Economy {
     }
 
     public static void createAccount(UUID uuid) {
-        balances.put(uuid, EcoZero.getPlugin().getConfig().getDouble("starting-balance"));
+        if (!hasAccount(uuid)) {
+            balances.put(uuid, EcoZero.getPlugin().getConfig().getDouble("starting-balance"));
+        }
+    }
+
+    public static void removeAccount(UUID uuid) {
+        balances.remove(uuid);
+        EconomyDB.removeAccount(uuid.toString());
     }
 
     public static Set<UUID> getBalanceKeySet() {

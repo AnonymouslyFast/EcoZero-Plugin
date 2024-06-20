@@ -11,12 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import studio.ecoprojects.ecozero.economy.Economy;
 import studio.ecoprojects.ecozero.utils.Colors;
+import studio.ecoprojects.ecozero.utils.RandomUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class BalanceCommand implements CommandExecutor {
+public class BalanceCommand implements CommandExecutor, TabCompleter {
 
 
     @Override
@@ -48,4 +49,14 @@ public class BalanceCommand implements CommandExecutor {
         return true;
     }
 
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+
+        if (strings.length == 1) {
+            return RandomUtils.getOfflinePlayersNames();
+        }
+
+        return null;
+    }
 }
