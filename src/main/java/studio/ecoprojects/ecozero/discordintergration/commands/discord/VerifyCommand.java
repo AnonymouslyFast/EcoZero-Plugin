@@ -22,8 +22,8 @@ public class VerifyCommand extends ListenerAdapter {
     private static void verify(Player player, User user) {
         VerifiedDB.addVerified(player.getUniqueId().toString(), user.getId());
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&7=== &6&lVerification Alert &7 ===\n&f" + player.getName() + " &fhas verified their discord and got some rewards!\n&7(/verify)\n&7=== &6&lVerification Alert &7 ==="));
-        Guild guild = BotEssentials.jda.getGuildById(BotEssentials.guildID);
-        guild.addRoleToMember(user, guild.getRoleById(BotEssentials.VerifiedRoleID)).complete();
+        Guild guild = BotEssentials.getGuild();
+        guild.addRoleToMember(user, BotEssentials.getVerifiedRole()).complete();
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Thanks for verifying!\n&7Rewards:\n  &8- &f30x Stone (TEMP)\n  &8- &2&l$&f1,500 (TEMP)"));
         String userID = VerifiedDB.getUserID(player.getUniqueId().toString()).get();
         DirectMessageUser(user, ":white_check_mark: You've been verified please make sure this information is right:\n\n**Discord ID:** `" + userID + "` (user: <@" + userID + ">) \n**Minecraft username:** `" + player.getName() + "`");
@@ -35,7 +35,7 @@ public class VerifyCommand extends ListenerAdapter {
     }
 
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        if (event.getChannel().getId().equals(BotEssentials.DiscordVerificationID)) {
+        if (event.getChannel() == BotEssentials.getDiscordVerificationChannel()) {
             if (event.getMessage().getContentRaw().startsWith("!verify")) {
                 if (!event.getMember().getUser().isBot()) {
                     String msg = event.getMessage().getContentRaw();

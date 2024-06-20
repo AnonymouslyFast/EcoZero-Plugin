@@ -65,8 +65,7 @@ public class ChatListener implements Listener {
                 net.luckperms.api.model.user.User user;
                 if (event.getPlayer().isOp()) {
                     if (!message.startsWith("!")) {
-                        id = BotEssentials.MinecraftChannelID;
-                        channel = BotEssentials.jda.getTextChannelById(id);
+                        channel = BotEssentials.getMinecraftChannel();
                         user = EcoZero.luckperms.getPlayerAdapter(Player.class).getUser(event.getPlayer());
                         prefix = user.getCachedData().getMetaData().getPrefix();
                         if (prefix == null) {
@@ -82,8 +81,7 @@ public class ChatListener implements Listener {
                         channel.sendMessage("**" + newprefix + " " + event.getPlayer().getName() + " »** " + event.getMessage()).queue();
                     }
                 } else {
-                    id = BotEssentials.MinecraftChannelID;
-                    channel = BotEssentials.jda.getTextChannelById(id);
+                    channel = BotEssentials.getMinecraftChannel();
                     user = EcoZero.luckperms.getPlayerAdapter(Player.class).getUser(event.getPlayer());
                     prefix = user.getCachedData().getMetaData().getPrefix();
                     newprefix = ChatColor.translateAlternateColorCodes('&', prefix);

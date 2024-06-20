@@ -35,21 +35,15 @@ public final class EcoZero extends JavaPlugin {
             // Config
             this.reloadConfig();
             this.saveDefaultConfig();
-            DataBaseSetUp.username = getConfig().getString("db-username");
-            DataBaseSetUp.password = getConfig().getString("db-password");
-            DataBaseSetUp.url = getConfig().getString("db-url");
-            BotEssentials.Token = getConfig().getString("bot-token");
-            BotEssentials.MinecraftChannelID = getConfig().getString("minecraft-to-discord-channel-id");
-            BotEssentials.MinecraftLogID = getConfig().getString("minecraft-logs-channel-id");
-            BotEssentials.DiscordVerificationID = getConfig().getString("discord-verification-channel-id");
-            BotEssentials.VerifiedRoleID = getConfig().getString("discord-verified-role-id");
-            BotEssentials.guildID = getConfig().getString("guild-id");
-            if (BotEssentials.Token == null) { logger.severe("Please Provide the bot Token so I can log into it."); }
-            if (BotEssentials.MinecraftChannelID == null) { logger.severe("Please Provide the minecraft-to-discord-channel-id so I send messages in it."); }
-            if (BotEssentials.MinecraftLogID == null) { logger.severe("Please Provide the minecraft-logs-channel-id so I send messages in it."); }
-            if (BotEssentials.DiscordVerificationID == null) { logger.severe("Please Provide the discord-verification-channel-id so I can access the channel."); }
-            if (BotEssentials.VerifiedRoleID == null) { logger.severe("Please Provide the discord-verified-role-ID so I can access the role."); }
-            if (BotEssentials.guildID == null) { logger.severe("Please Provide the guild-id so I can access the guild."); }
+            DataBaseSetUp.setUsername(EcoZero.getPlugin().getConfig().getString("db-username"));
+            DataBaseSetUp.setPassword(EcoZero.getPlugin().getConfig().getString("db-password"));
+            DataBaseSetUp.setUrl(EcoZero.getPlugin().getConfig().getString("db-url"));
+            BotEssentials.setToken(getConfig().getString("bot-token"));
+            BotEssentials.setMinecraftChannelID(getConfig().getString("minecraft-to-discord-channel-id"));
+            BotEssentials.setMinecraftLogID(getConfig().getString("minecraft-logs-channel-id"));
+            BotEssentials.setDiscordVerificationID(getConfig().getString("discord-verification-channel-id"));
+            BotEssentials.setVerifiedRoleID(getConfig().getString("discord-verified-role-id"));
+            BotEssentials.setGuildID(getConfig().getString("guild-id"));
             // End of Config
 
             BotEssentials.startBot();

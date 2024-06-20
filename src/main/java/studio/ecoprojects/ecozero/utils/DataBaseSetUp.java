@@ -7,13 +7,13 @@ import studio.ecoprojects.ecozero.economy.database.EconomyDB;
 
 public class DataBaseSetUp {
 
-    public static String username;
-    public static String password;
-    public static String url;
+    private static String databaseUsername;
+    private static String databasePassword;
+    private static String databaseUrl;
     public static Jdbi jdbi;
 
     public static void login() {
-        jdbi = Jdbi.create(url, username, password);
+        jdbi = Jdbi.create(databaseUrl, databaseUsername, databasePassword);
         if (!VerifiedDB.dataBaseHasTable()) {
             EcoZero.logger.info("Database does not contain 'verified' table.. creating it");
             VerifiedDB.createVerifiedTable();
@@ -25,5 +25,19 @@ public class DataBaseSetUp {
 
         EcoZero.logger.info("DataBase Connected");
     }
+
+    public static void setUsername(String username) {
+        databaseUsername = username;
+    }
+
+    public static void setPassword(String password) {
+        databasePassword = password;
+    }
+
+    public static void setUrl(String url) {
+        databaseUrl = url;
+    }
+
+
 
 }

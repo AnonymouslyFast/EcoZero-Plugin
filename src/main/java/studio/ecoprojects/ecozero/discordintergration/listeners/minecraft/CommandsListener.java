@@ -15,14 +15,14 @@ public class CommandsListener implements Listener {
         Player player = event.getPlayer();
         String time = TimeFormat.TIME_LONG.now().toString();
         String message = time + "** | " + player.getName() + "** `" + event.getMessage() + "`";
-        BotEssentials.jda.getTextChannelById(BotEssentials.MinecraftLogID).sendMessage(message).complete();
+        BotEssentials.getMinecraftLogChannel().sendMessage(message).complete();
     }
 
     @EventHandler
     public void onConsoleCommand(ServerCommandEvent event) {
         String time = TimeFormat.TIME_LONG.now().toString();
         String message = time + "** | CONSOLE ** `/" + event.getCommand() + "`";
-        BotEssentials.jda.getTextChannelById(BotEssentials.MinecraftLogID).sendMessage(message).complete();
+        BotEssentials.getMinecraftLogChannel().sendMessage(message).complete();
     }
 
 }

@@ -39,6 +39,6 @@ public class JoinListener implements Listener {
                 .setColor(color)
                 .setAuthor(author, null, "https://minotar.net/avatar/" + player.getUniqueId())
                 .setTimestamp(Instant.now());
-        BotEssentials.jda.getTextChannelById(BotEssentials.MinecraftChannelID).sendMessageEmbeds(embed.build()).queue();
+        BotEssentials.getMinecraftChannel().sendMessageEmbeds(embed.build()).queue();
     }
 }

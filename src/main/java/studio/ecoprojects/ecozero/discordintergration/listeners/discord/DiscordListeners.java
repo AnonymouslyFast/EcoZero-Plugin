@@ -14,7 +14,7 @@ public class DiscordListeners extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent event) {
         Member member;
-        if (event.getChannel() == BotEssentials.jda.getTextChannelById(BotEssentials.MinecraftChannelID)) {
+        if (event.getChannel() == BotEssentials.getMinecraftChannel()) {
             member = event.getMember();
             if (!member.getUser().isBot()) {
                 Message message = event.getMessage().getReferencedMessage();
@@ -28,7 +28,7 @@ public class DiscordListeners extends ListenerAdapter {
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&b[&7Discord&b] &f" + member.getEffectiveName() + "&8: &f" + msg));
                 }
             }
-        } else if (event.getChannel() == BotEssentials.jda.getTextChannelById(BotEssentials.MinecraftLogID)) {
+        } else if (event.getChannel() == BotEssentials.getMinecraftLogChannel()) {
             member = event.getMember();
             if (!member.getUser().isBot()) {
                 String command = event.getMessage().getContentDisplay();
