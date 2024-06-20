@@ -9,19 +9,19 @@ import java.util.List;
 
 public class ItemUtils {
 
-    public static void SetItemName(ItemStack item, String name) {
+    public static void setItemName(ItemStack item, String name) {
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
         item.setItemMeta(itemMeta);
     }
 
-    public static void SetItemLore(ItemStack item, List<String> lore) {
+    public static void setItemLore(ItemStack item, List<String> lore) {
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setLore(lore);
         item.setItemMeta(itemMeta);
     }
 
-    public static void SetItemFlags(ItemStack item, ItemFlag flag) {
+    public static void setItemFlags(ItemStack item, ItemFlag flag) {
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.addItemFlags(flag);
         item.setItemMeta(itemMeta);

@@ -14,7 +14,6 @@ import studio.ecoprojects.ecozero.utils.DataBaseSetUp;
 import studio.ecoprojects.ecozero.utils.EventUtils;
 
 public final class EcoZero extends JavaPlugin {
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(EcoZero.class);
     public static Logger logger;
     public static LuckPerms luckperms;
     public static EcoZero plugin;
@@ -49,7 +48,7 @@ public final class EcoZero extends JavaPlugin {
             // End of Config
 
             BotEssentials.startBot();
-            DataBaseSetUp.Login();
+            DataBaseSetUp.login();
 
             // Registering Minecraft Listeners
             EventUtils.registerMinecraftListeners(EcoZero.getPlugin().getClass().getPackageName() + ".discordintergration.listeners.minecraft");

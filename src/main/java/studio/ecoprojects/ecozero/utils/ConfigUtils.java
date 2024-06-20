@@ -13,7 +13,7 @@ public class ConfigUtils {
         return EcoZero.getPlugin().getConfig().getString("server-name");
     }
 
-    public static void ReloadConfigFiles() {
+    public static void reloadConfigFiles() {
         EcoZero.getPlugin().saveConfig();
         EcoZero.getPlugin().reloadConfig();
     }

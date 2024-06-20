@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class SLAPI {
 
-    public static void LoadAccount(Player player) {
+    public static void loadAccount(Player player) {
 
         if (EconomyDB.getBalance(player.getUniqueId().toString()).isEmpty()) {
             EcoZero.logger.info("Could not find account for " + player.getName());
@@ -20,7 +20,7 @@ public class SLAPI {
         }
     }
 
-    public static void SaveAccounts() {
+    public static void saveAccounts() {
         for (UUID uuid : Economy.getBalanceKeySet()) {
             EconomyDB.addAccount(uuid.toString(), Economy.getBalance(uuid));
         }

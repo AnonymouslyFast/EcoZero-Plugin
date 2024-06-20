@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class VerifiedDB {
 
-    public static boolean DataBaseHasTable() {
+    public static boolean dataBaseHasTable() {
         try {
             ResultSet set = DataBaseSetUp.jdbi.open().getConnection().
                     getMetaData().getTables(null, null, null, new String[] {"TABLE"});
@@ -26,26 +26,26 @@ public class VerifiedDB {
         return false;
     }
 
-    public static void CreateVerifiedTable() {
+    public static void createVerifiedTable() {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
             handle.execute("CREATE TABLE verified (uuid varchar(255), discord_id varchar(255))");;
             EcoZero.logger.info("Created 'verified' table.");
         }
     }
 
-    public static void AddVerified(String Uuid, String UserID) {
+    public static void addVerified(String Uuid, String UserID) {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
             handle.execute("INSERT INTO verified (uuid, discord_id) VALUES ('" + Uuid + "', '" + UserID + "')", new Object[0]);
         }
     }
 
-    public static void RemoveVerifiedByUUID(String Uuid) {
+    public static void removeVerifiedByUUID(String Uuid) {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
             handle.execute("DELETE FROM verified WHERE uuid='" + Uuid + "'", new Object[0]);
         }
     }
 
-    public static void RemoveVerifiedByUserID(String UserID) {
+    public static void removeVerifiedByUserID(String UserID) {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
             handle.execute("DELETE FROM verified WHERE discord_id='" + UserID + "'", new Object[0]);
         }

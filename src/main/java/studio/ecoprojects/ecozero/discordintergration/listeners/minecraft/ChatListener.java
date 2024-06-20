@@ -44,7 +44,7 @@ public class ChatListener implements Listener {
                             DM.sendMessage("Your discord to minecraft connection on Lowy has been removed. Please contact admin if you think this is a mistake.");
                         }
 
-                        VerifiedDB.RemoveVerifiedByUUID(player.getUniqueId().toString());
+                        VerifiedDB.removeVerifiedByUUID(player.getUniqueId().toString());
                         event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVerification: &fremoved &c" + player.getDisplayName() + " &ffrom verified."));
                     } else {
                         event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThat player is not verified!"));

@@ -10,7 +10,7 @@ import java.util.*;
 
 public class EconomyDB {
 
-    public static boolean DataBaseHasTable() {
+    public static boolean dataBaseHasTable() {
         try {
             ResultSet set = DataBaseSetUp.jdbi.open().getConnection().
                     getMetaData().getTables(null, null, null, new String[] {"TABLE"});
@@ -24,7 +24,7 @@ public class EconomyDB {
         return false;
     }
 
-    public static void CreateBalancesTable() {
+    public static void createBalancesTable() {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
             handle.execute("CREATE TABLE balances (uuid varchar(255), balance double)");;
             EcoZero.logger.info("Created 'balances' table.");

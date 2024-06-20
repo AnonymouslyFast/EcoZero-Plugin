@@ -33,8 +33,8 @@ public class DiscordDashboard implements Listener {
         Inventory inventory = Bukkit.createInventory(null, 45, title);
         ItemStack[] backFills = new ItemStack[0];
         ItemStack backfill = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        ItemUtils.SetItemName(backfill, "&7");
-        ItemUtils.SetItemFlags(backfill, ItemFlag.HIDE_ATTRIBUTES);
+        ItemUtils.setItemName(backfill, "&7");
+        ItemUtils.setItemFlags(backfill, ItemFlag.HIDE_ATTRIBUTES);
 
         for(int i = 0; i <= inventory.getSize() - 1; ++i) {
             ItemStack[] newArray = new ItemStack[i + 1];
@@ -45,17 +45,17 @@ public class DiscordDashboard implements Listener {
 
         inventory.setContents(backFills);
         ItemStack close = new ItemStack(Material.BARRIER);
-        ItemUtils.SetItemName(close, "&c&lClose");
+        ItemUtils.setItemName(close, "&c&lClose");
         List<String> lore = new ArrayList();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to close this GUI"));
-        ItemUtils.SetItemLore(close, lore);
-        ItemUtils.SetItemFlags(close, ItemFlag.HIDE_ATTRIBUTES);
+        ItemUtils.setItemLore(close, lore);
+        ItemUtils.setItemFlags(close, ItemFlag.HIDE_ATTRIBUTES);
         ItemStack back = new ItemStack(Material.FEATHER);
-        ItemUtils.SetItemName(back, "&3&lBack");
+        ItemUtils.setItemName(back, "&3&lBack");
         lore = new ArrayList();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to go back to the previous GUI"));
-        ItemUtils.SetItemLore(back, lore);
-        ItemUtils.SetItemFlags(back, ItemFlag.HIDE_ATTRIBUTES);
+        ItemUtils.setItemLore(back, lore);
+        ItemUtils.setItemFlags(back, ItemFlag.HIDE_ATTRIBUTES);
         inventory.setItem(40, close);
         inventory.setItem(36, back);
         int EndingSlot = 34;
@@ -74,11 +74,11 @@ public class DiscordDashboard implements Listener {
                 SkullMeta skullMeta = (SkullMeta)head.getItemMeta();
                 skullMeta.setOwningPlayer(player);
                 head.setItemMeta(skullMeta);
-                ItemUtils.SetItemFlags(head, ItemFlag.HIDE_ATTRIBUTES);
+                ItemUtils.setItemFlags(head, ItemFlag.HIDE_ATTRIBUTES);
                 String prefix = EcoZero.luckperms.getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getPrefix();
                 if (prefix == null) { prefix = "&8&lDefault"; }
 
-                ItemUtils.SetItemName(head, prefix + " &f" + player.getName());
+                ItemUtils.setItemName(head, prefix + " &f" + player.getName());
                 lore = new ArrayList();
                 JDA jda = BotEssentials.jda;
                 if (VerifiedDB.getUserID(player.getUniqueId().toString()).isPresent()) {
@@ -89,7 +89,7 @@ public class DiscordDashboard implements Listener {
                     lore.add(ChatColor.translateAlternateColorCodes('&', "  &7ID: &f" + user.getId()));
                 }
 
-                ItemUtils.SetItemLore(head, lore);
+                ItemUtils.setItemLore(head, lore);
                 inventory.setItem(nextSlot, head);
                 ++nextSlot;
             }
@@ -103,8 +103,8 @@ public class DiscordDashboard implements Listener {
         Inventory inventory = Bukkit.createInventory(null, 36, title);
         ItemStack[] backFills = new ItemStack[0];
         ItemStack backfill = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        ItemUtils.SetItemName(backfill, "&7");
-        ItemUtils.SetItemFlags(backfill, ItemFlag.HIDE_ATTRIBUTES);
+        ItemUtils.setItemName(backfill, "&7");
+        ItemUtils.setItemFlags(backfill, ItemFlag.HIDE_ATTRIBUTES);
 
         for(int i = 0; i <= inventory.getSize() - 1; ++i) {
             ItemStack[] newArray = new ItemStack[i + 1];
@@ -115,25 +115,25 @@ public class DiscordDashboard implements Listener {
 
         inventory.setContents(backFills);
         ItemStack close = new ItemStack(Material.BARRIER);
-        ItemUtils.SetItemName(close, "&c&lClose");
+        ItemUtils.setItemName(close, "&c&lClose");
         List<String> lore = new ArrayList();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to close this GUI"));
-        ItemUtils.SetItemLore(close, lore);
-        ItemUtils.SetItemFlags(close, ItemFlag.HIDE_ATTRIBUTES);
+        ItemUtils.setItemLore(close, lore);
+        ItemUtils.setItemFlags(close, ItemFlag.HIDE_ATTRIBUTES);
         ItemStack seeVerified = new ItemStack(Material.BOOK);
-        ItemUtils.SetItemName(seeVerified, "&6&lVerified List");
+        ItemUtils.setItemName(seeVerified, "&6&lVerified List");
         lore = new ArrayList();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to see all verified"));
-        ItemUtils.SetItemLore(seeVerified, lore);
-        ItemUtils.SetItemFlags(seeVerified, ItemFlag.HIDE_ATTRIBUTES);
+        ItemUtils.setItemLore(seeVerified, lore);
+        ItemUtils.setItemFlags(seeVerified, ItemFlag.HIDE_ATTRIBUTES);
         ItemStack removeVerified = new ItemStack(Material.STRUCTURE_VOID);
-        ItemUtils.SetItemName(removeVerified, "&4&lRemove Verified");
+        ItemUtils.setItemName(removeVerified, "&4&lRemove Verified");
         lore = new ArrayList();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to remove verified from a player"));
-        ItemUtils.SetItemLore(removeVerified, lore);
-        ItemUtils.SetItemFlags(removeVerified, ItemFlag.HIDE_ATTRIBUTES);
+        ItemUtils.setItemLore(removeVerified, lore);
+        ItemUtils.setItemFlags(removeVerified, ItemFlag.HIDE_ATTRIBUTES);
         ItemStack Statics = new ItemStack(Material.PAPER);
-        ItemUtils.SetItemName(Statics, "&3&lVerify Statistics");
+        ItemUtils.setItemName(Statics, "&3&lVerify Statistics");
         int size = VerifiedDB.getVerifiedUUIDS().size();
         int UniqueJoins = Bukkit.getOfflinePlayers().length;
         float overJoins = (float)size / (float)UniqueJoins;
@@ -142,8 +142,8 @@ public class DiscordDashboard implements Listener {
         lore = new ArrayList();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7" + precent + "% of players are verified"));
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7(" + size + " verified / " + UniqueJoins + " joins)"));
-        ItemUtils.SetItemLore(Statics, lore);
-        ItemUtils.SetItemFlags(Statics, ItemFlag.HIDE_ATTRIBUTES);
+        ItemUtils.setItemLore(Statics, lore);
+        ItemUtils.setItemFlags(Statics, ItemFlag.HIDE_ATTRIBUTES);
         inventory.setItem(31, close);
         inventory.setItem(13, seeVerified);
         inventory.setItem(11, removeVerified);

@@ -20,7 +20,7 @@ public class VerifyCommand extends ListenerAdapter {
 
 
     private static void verify(Player player, User user) {
-        VerifiedDB.AddVerified(player.getUniqueId().toString(), user.getId());
+        VerifiedDB.addVerified(player.getUniqueId().toString(), user.getId());
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&7=== &6&lVerification Alert &7 ===\n&f" + player.getName() + " &fhas verified their discord and got some rewards!\n&7(/verify)\n&7=== &6&lVerification Alert &7 ==="));
         Guild guild = BotEssentials.jda.getGuildById(BotEssentials.guildID);
         guild.addRoleToMember(user, guild.getRoleById(BotEssentials.VerifiedRoleID)).complete();
