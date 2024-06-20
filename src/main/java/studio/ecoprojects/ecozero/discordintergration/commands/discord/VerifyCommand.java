@@ -13,10 +13,11 @@ import studio.ecoprojects.ecozero.discordintergration.BotEssentials;
 import studio.ecoprojects.ecozero.discordintergration.database.VerifiedDB;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class VerifyCommand extends ListenerAdapter {
-    public static HashMap<UUID, Integer> VerifyCodes = new HashMap();
+    public static HashMap<UUID, Integer> VerifyCodes = new HashMap<>();
 
 
     private static void verify(Player player, User user) {
@@ -25,7 +26,8 @@ public class VerifyCommand extends ListenerAdapter {
         Guild guild = BotEssentials.getGuild();
         guild.addRoleToMember(user, BotEssentials.getVerifiedRole()).complete();
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Thanks for verifying!\n&7Rewards:\n  &8- &f30x Stone (TEMP)\n  &8- &2&l$&f1,500 (TEMP)"));
-        String userID = VerifiedDB.getUserID(player.getUniqueId().toString()).get();
+        String userID = null;
+        if (VerifiedDB.getUserID(player.getUniqueId().toString()).isPresent()) userID = VerifiedDB.getUserID(player.getUniqueId().toString()).get();
         DirectMessageUser(user, ":white_check_mark: You've been verified please make sure this information is right:\n\n**Discord ID:** `" + userID + "` (user: <@" + userID + ">) \n**Minecraft username:** `" + player.getName() + "`");
     }
 
@@ -37,7 +39,7 @@ public class VerifyCommand extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         if (event.getChannel() == BotEssentials.getDiscordVerificationChannel()) {
             if (event.getMessage().getContentRaw().startsWith("!verify")) {
-                if (!event.getMember().getUser().isBot()) {
+                if (!Objects.requireNonNull(event.getMember()).getUser().isBot()) {
                     String msg = event.getMessage().getContentRaw();
                     event.getMessage().delete().complete();
                     msg = msg.replace("!verify", "");
@@ -47,7 +49,7 @@ public class VerifyCommand extends ListenerAdapter {
                         String username = args[2];
                         Player player = Bukkit.getPlayerExact(username);
                         if (Bukkit.getPlayerExact(username) != null) {
-                            if (VerifiedDB.getUserID(player.getUniqueId().toString()).isEmpty()) {
+                            if (player != null && VerifiedDB.getUserID(player.getUniqueId().toString()).isEmpty()) {
                                 if (VerifyCodes.containsKey(player.getUniqueId())) {
                                     if (code.equals(VerifyCodes.get(player.getUniqueId()).toString())) {
                                         verify(player, event.getMember().getUser());
@@ -56,8 +58,6 @@ public class VerifyCommand extends ListenerAdapter {
                                 } else {
                                     DirectMessageUser(event.getMember().getUser(), ":x: **That code is not the correct code!**");
                                 }
-                            } else {
-                                DirectMessageUser(event.getMember().getUser(), ":x: ** That minecraft username is already connected to a discord account!**");
                             }
                         } else {
                             DirectMessageUser(event.getMember().getUser(), ":x: **That minecraft username does not exist/haven't played before!**");

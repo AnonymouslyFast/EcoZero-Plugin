@@ -26,7 +26,7 @@ public class EconomyDB {
 
     public static void createBalancesTable() {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
-            handle.execute("CREATE TABLE balances (uuid varchar(255), balance double)");;
+            handle.execute("CREATE TABLE balances (uuid varchar(255), balance double)");
             EcoZero.logger.info("Created 'balances' table.");
         }
     }
@@ -62,7 +62,7 @@ public class EconomyDB {
         }
 
         for (UUID uuid : uuids) {
-            if (!getBalance(uuid.toString()).isEmpty()) {
+            if (getBalance(uuid.toString()).isPresent()) {
                 values.put(uuid, getBalance(uuid.toString()).get());
             }
         }

@@ -11,18 +11,21 @@ public class ItemUtils {
 
     public static void setItemName(ItemStack item, String name) {
         ItemMeta itemMeta = item.getItemMeta();
+        assert itemMeta != null;
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
         item.setItemMeta(itemMeta);
     }
 
     public static void setItemLore(ItemStack item, List<String> lore) {
         ItemMeta itemMeta = item.getItemMeta();
+        assert itemMeta != null;
         itemMeta.setLore(lore);
         item.setItemMeta(itemMeta);
     }
 
     public static void setItemFlags(ItemStack item, ItemFlag flag) {
         ItemMeta itemMeta = item.getItemMeta();
+        assert itemMeta != null;
         itemMeta.addItemFlags(flag);
         item.setItemMeta(itemMeta);
     }

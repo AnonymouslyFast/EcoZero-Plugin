@@ -18,21 +18,19 @@ import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.discordintergration.database.VerifiedDB;
 import studio.ecoprojects.ecozero.utils.ItemUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DiscordDashboard implements Listener {
-    public static List<UUID> isRemoving = new ArrayList();
-    public static HashMap<UUID, Inventory> LastInventory = new HashMap();
+    public static List<UUID> isRemoving = new ArrayList<>();
+    public static HashMap<UUID, Inventory> LastInventory = new HashMap<>();
+
+    private static ItemStack[] backFills = new ItemStack[0];
+    private static final ItemStack backfill = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
 
 
     private static Inventory CreateVerifiedInventory(List<UUID> uuids) {
         String title = ChatColor.translateAlternateColorCodes('&', "&9&lDashboard &8» &6&lVerified List");
         Inventory inventory = Bukkit.createInventory(null, 45, title);
-        ItemStack[] backFills = new ItemStack[0];
-        ItemStack backfill = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemUtils.setItemName(backfill, "&7");
         ItemUtils.setItemFlags(backfill, ItemFlag.HIDE_ATTRIBUTES);
 
@@ -46,13 +44,13 @@ public class DiscordDashboard implements Listener {
         inventory.setContents(backFills);
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemUtils.setItemName(close, "&c&lClose");
-        List<String> lore = new ArrayList();
+        List<String> lore = new ArrayList<>();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to close this GUI"));
         ItemUtils.setItemLore(close, lore);
         ItemUtils.setItemFlags(close, ItemFlag.HIDE_ATTRIBUTES);
         ItemStack back = new ItemStack(Material.FEATHER);
         ItemUtils.setItemName(back, "&3&lBack");
-        lore = new ArrayList();
+        lore = new ArrayList<>();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to go back to the previous GUI"));
         ItemUtils.setItemLore(back, lore);
         ItemUtils.setItemFlags(back, ItemFlag.HIDE_ATTRIBUTES);
@@ -72,14 +70,14 @@ public class DiscordDashboard implements Listener {
 
                 ItemStack head = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta skullMeta = (SkullMeta)head.getItemMeta();
-                skullMeta.setOwningPlayer(player);
+                Objects.requireNonNull(skullMeta).setOwningPlayer(player);
                 head.setItemMeta(skullMeta);
                 ItemUtils.setItemFlags(head, ItemFlag.HIDE_ATTRIBUTES);
-                String prefix = EcoZero.luckperms.getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getPrefix();
+                String prefix = Objects.requireNonNull(EcoZero.luckperms.getUserManager().getUser(player.getUniqueId())).getCachedData().getMetaData().getPrefix();
                 if (prefix == null) { prefix = "&8&lDefault"; }
 
                 ItemUtils.setItemName(head, prefix + " &f" + player.getName());
-                lore = new ArrayList();
+                lore = new ArrayList<>();
                 JDA jda = BotEssentials.jda;
                 if (VerifiedDB.getUserID(player.getUniqueId().toString()).isPresent()) {
                     String id = VerifiedDB.getUserID(player.getUniqueId().toString()).get();
@@ -116,19 +114,19 @@ public class DiscordDashboard implements Listener {
         inventory.setContents(backFills);
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemUtils.setItemName(close, "&c&lClose");
-        List<String> lore = new ArrayList();
+        List<String> lore = new ArrayList<>();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to close this GUI"));
         ItemUtils.setItemLore(close, lore);
         ItemUtils.setItemFlags(close, ItemFlag.HIDE_ATTRIBUTES);
         ItemStack seeVerified = new ItemStack(Material.BOOK);
         ItemUtils.setItemName(seeVerified, "&6&lVerified List");
-        lore = new ArrayList();
+        lore = new ArrayList<>();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to see all verified"));
         ItemUtils.setItemLore(seeVerified, lore);
         ItemUtils.setItemFlags(seeVerified, ItemFlag.HIDE_ATTRIBUTES);
         ItemStack removeVerified = new ItemStack(Material.STRUCTURE_VOID);
         ItemUtils.setItemName(removeVerified, "&4&lRemove Verified");
-        lore = new ArrayList();
+        lore = new ArrayList<>();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7Click to remove verified from a player"));
         ItemUtils.setItemLore(removeVerified, lore);
         ItemUtils.setItemFlags(removeVerified, ItemFlag.HIDE_ATTRIBUTES);
@@ -139,7 +137,7 @@ public class DiscordDashboard implements Listener {
         float overJoins = (float)size / (float)UniqueJoins;
         float pre = overJoins * 100.0F;
         int precent = Math.round(pre);
-        lore = new ArrayList();
+        lore = new ArrayList<>();
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7" + precent + "% of players are verified"));
         lore.add(ChatColor.translateAlternateColorCodes('&', "&7(" + size + " verified / " + UniqueJoins + " joins)"));
         ItemUtils.setItemLore(Statics, lore);

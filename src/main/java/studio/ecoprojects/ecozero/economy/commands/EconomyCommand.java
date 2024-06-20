@@ -14,10 +14,7 @@ import studio.ecoprojects.ecozero.economy.database.EconomyDB;
 import studio.ecoprojects.ecozero.utils.Colors;
 import studio.ecoprojects.ecozero.utils.RandomUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class EconomyCommand implements CommandExecutor, TabCompleter {
 
@@ -48,7 +45,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                         commandSender.sendMessage("Usage: /economy set <player> <number>");
                     } else {
                         Economy.setBalance(player.getUniqueId(), number);
-                        if (player.isOnline()) player.getPlayer()
+                        if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
                                 .sendMessage(Colors.translateCodes(prefix + " &fYour balance has been set to: &2&l$&f" + Economy.getBalance(player.getUniqueId())));
                         commandSender.sendMessage(
                                 Colors.translateCodes(prefix + " &fSuccessfully set " + player.getName() + "'s balance to: &2&l$&f" + Economy.getBalance(player.getUniqueId())));
@@ -71,7 +68,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                             commandSender.sendMessage("Usage: /economy remove <player> <number> (Can't leave player with negative balance!)");
                         } else {
                             Economy.setBalance(player.getUniqueId(), balanceSubtracted);
-                            if (player.isOnline()) player.getPlayer()
+                            if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
                                     .sendMessage(Colors.translateCodes(prefix + " &2&l$&f" + number + " has been removed from your balance. &7(Current balance: &2&l$&f " + Economy.getBalance(player.getUniqueId()) + "&7)"));
                             commandSender.sendMessage(
                                     Colors.translateCodes(prefix + " &fSuccessfully removed &2&l$&f" + number + " from " + player.getName() + "'s balance &7(their current balance: &2&l&f" + Economy.getBalance(player.getUniqueId()) + "&7)"));
@@ -92,7 +89,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                         double currentBalance = Economy.getBalance(player.getUniqueId());
                         double balanceAdded = currentBalance + number;
                         Economy.setBalance(player.getUniqueId(), balanceAdded);
-                        if (player.isOnline()) player.getPlayer()
+                        if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
                                 .sendMessage(Colors.translateCodes(prefix + " &2&l$&f" + number + " has been added tp your balance. &7(Current balance: &2&l$&f " + Economy.getBalance(player.getUniqueId()) + "&7)"));
                         commandSender.sendMessage(
                                 Colors.translateCodes(prefix + " &fSuccessfully added &2&l$&f" + number + " to " + player.getName() + "'s balance &7(their current balance: &2&l&f" + Economy.getBalance(player.getUniqueId()) + "&7)"));
@@ -120,7 +117,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                                 commandSender.sendMessage("That player does not have an account");
                             } else {
                                 Economy.removeAccount(player.getUniqueId());
-                                if (player.isOnline()) player.getPlayer()
+                                if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
                                         .sendMessage(Colors.translateCodes(prefix + " &fYour Economy account has been removed/deleted. Re-login to get a default account."));
                                 commandSender.sendMessage(
                                         Colors.translateCodes(prefix + " &fSuccessfully removed " + player.getName() + "'s Account"));
@@ -138,7 +135,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                         for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                             if (EconomyDB.getBalance(player.getUniqueId().toString()).isEmpty()) {
                                 Economy.createAccount(player.getUniqueId());
-                                if (player.isOnline()) player.getPlayer().sendMessage(Colors.translateCodes(prefix + " &fYou have been given a default account, please re-log to get a default account."));
+                                if (player.isOnline()) Objects.requireNonNull(player.getPlayer()).sendMessage(Colors.translateCodes(prefix + " &fYou have been given a default account, please re-log to get a default account."));
                             }
                         }
                         Bukkit.broadcastMessage(Colors.translateCodes(prefix + " &a&lAll people who don't have an account now have default accounts"));
@@ -148,7 +145,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                             commandSender.sendMessage("Usage: /economy createaccount <player/*>");
                         } else {
                             Economy.createAccount(player.getUniqueId());
-                            if (player.isOnline()) player.getPlayer()
+                            if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
                                     .sendMessage(Colors.translateCodes(prefix + " &fYou have been given a default account, please re-log to get a default account."));
                             commandSender.sendMessage(
                                     Colors.translateCodes(prefix + " &fSuccessfully created account for " + player.getName()));
@@ -177,8 +174,8 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
 
     }
 
-    private List<String> arguments1 = Arrays.asList("add", "remove", "set", "help", "removeaccount", "createaccount");
-    private List<String> arguments3 = Arrays.asList("1", "8", "16", "32", "64", "128");
+    private final List<String> arguments1 = Arrays.asList("add", "remove", "set", "help", "removeaccount", "createaccount");
+    private final List<String> arguments3 = Arrays.asList("1", "8", "16", "32", "64", "128");
 
 
 

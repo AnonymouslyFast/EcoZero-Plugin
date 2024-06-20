@@ -13,7 +13,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import studio.ecoprojects.ecozero.discordintergration.BotEssentials;
 import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.discordintergration.database.VerifiedDB;
+import studio.ecoprojects.ecozero.utils.ConfigUtils;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class ChatListener implements Listener {
@@ -25,23 +27,19 @@ public class ChatListener implements Listener {
             if (event.getMessage().equalsIgnoreCase("cancel")) {
                 DiscordDashboard.isRemoving.remove(event.getPlayer().getUniqueId());
                 event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lCanceled"));
-                Bukkit.getScheduler().scheduleSyncDelayedTask(EcoZero.getPlugin(), new Runnable() {
-                    public void run() {
-                        event.getPlayer().openInventory(DiscordDashboard.CreateDashBoard());
-                    }
-                }, 1L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(EcoZero.getPlugin(), () -> event.getPlayer().openInventory(DiscordDashboard.CreateDashBoard()), 1L);
             } else {
                 Player player = Bukkit.getPlayerExact(event.getMessage());
                 if (player != null && player.hasPlayedBefore()) {
                     Optional<String> userID = VerifiedDB.getUserID(player.getUniqueId().toString());
                     if (userID.isPresent()) {
                         DiscordDashboard.isRemoving.remove(event.getPlayer().getUniqueId());
-                        User discordUser = BotEssentials.jda.getUserById((String)userID.get());
+                        User discordUser = BotEssentials.jda.getUserById(userID.get());
                         if (player.isOnline()) {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVerified &8» &fYour account has been unverified. Please contact a admin if this is a issue."));
                         } else {
-                            PrivateChannel DM = discordUser.openPrivateChannel().complete();
-                            DM.sendMessage("Your discord to minecraft connection on Lowy has been removed. Please contact admin if you think this is a mistake.");
+                            PrivateChannel DM = Objects.requireNonNull(discordUser).openPrivateChannel().complete();
+                            DM.sendMessage("Your discord to minecraft connection on " + ConfigUtils.getServerName() + " has been removed. Please contact admin if you think this is a mistake.").queue();
                         }
 
                         VerifiedDB.removeVerifiedByUUID(player.getUniqueId().toString());
@@ -58,37 +56,28 @@ public class ChatListener implements Listener {
         if (!event.isCancelled()) {
             String message = event.getMessage();
             if (!message.contains("@everyone") || !message.contains("@here")) {
-                String prefix;
+                net.luckperms.api.model.user.User user = EcoZero.luckperms.getPlayerAdapter(Player.class).getUser(event.getPlayer());
+                String prefix = user.getCachedData().getMetaData().getPrefix();
                 String newprefix;
-                String id;
-                TextChannel channel;
-                net.luckperms.api.model.user.User user;
+                TextChannel channel = BotEssentials.getMinecraftChannel();
                 if (event.getPlayer().isOp()) {
                     if (!message.startsWith("!")) {
-                        channel = BotEssentials.getMinecraftChannel();
-                        user = EcoZero.luckperms.getPlayerAdapter(Player.class).getUser(event.getPlayer());
-                        prefix = user.getCachedData().getMetaData().getPrefix();
                         if (prefix == null) {
                             prefix = "Default";
                         }
 
                         newprefix = ChatColor.translateAlternateColorCodes('&', prefix);
                         newprefix = ChatColor.stripColor(newprefix);
-                        if (newprefix == null || prefix == null) {
-                            newprefix = "Default";
-                        }
 
                         channel.sendMessage("**" + newprefix + " " + event.getPlayer().getName() + " »** " + event.getMessage()).queue();
                     }
                 } else {
-                    channel = BotEssentials.getMinecraftChannel();
-                    user = EcoZero.luckperms.getPlayerAdapter(Player.class).getUser(event.getPlayer());
-                    prefix = user.getCachedData().getMetaData().getPrefix();
+                    if (prefix == null) {
+                        prefix = "Default";
+                    }
+
                     newprefix = ChatColor.translateAlternateColorCodes('&', prefix);
                     newprefix = ChatColor.stripColor(newprefix);
-                    if (newprefix == null || prefix == null) {
-                        newprefix = "Default";
-                    }
 
                     channel.sendMessage("**" + newprefix + " " + event.getPlayer().getName() + " »** " + event.getMessage()).queue();
                 }

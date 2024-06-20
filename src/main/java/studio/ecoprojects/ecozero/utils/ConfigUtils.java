@@ -6,9 +6,9 @@ import studio.ecoprojects.ecozero.discordintergration.BotEssentials;
 public class ConfigUtils {
 
 
-    public static String getServerIP() {
-        return EcoZero.getPlugin().getConfig().getString("server-ip");
-    }
+//    public static String getServerIP() {
+//        return EcoZero.getPlugin().getConfig().getString("server-ip");
+//    }
 
     public static String getServerName() {
         return EcoZero.getPlugin().getConfig().getString("server-name");

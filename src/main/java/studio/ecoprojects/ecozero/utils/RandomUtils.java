@@ -5,7 +5,7 @@ import java.util.List;
 
 public class RandomUtils {
 
-    private static List<String> offlinePlayersNames = new ArrayList<>();
+    private static final List<String> offlinePlayersNames = new ArrayList<>();
 
     public static void addOfflinePlayerName(String name) {
         offlinePlayersNames.add(name);

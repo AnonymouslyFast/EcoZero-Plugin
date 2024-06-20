@@ -3,11 +3,11 @@ package studio.ecoprojects.ecozero;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.slf4j.LoggerFactory;
 import studio.ecoprojects.ecozero.economy.SLAPI;
 import studio.ecoprojects.ecozero.economy.commands.BalanceCommand;
 import studio.ecoprojects.ecozero.discordintergration.BotEssentials;
@@ -21,7 +21,7 @@ import studio.ecoprojects.ecozero.utils.RandomUtils;
 public final class EcoZero extends JavaPlugin {
     public static Logger logger;
     public static LuckPerms luckperms;
-    public static EcoZero plugin;
+    private static EcoZero plugin;
 
     public void onEnable() {
         plugin = this;
@@ -32,44 +32,17 @@ public final class EcoZero extends JavaPlugin {
                 luckperms = provider.getProvider();
             }
 
-            // Config
             this.reloadConfig();
             this.saveDefaultConfig();
-            DataBaseSetUp.setUsername(EcoZero.getPlugin().getConfig().getString("db-username"));
-            DataBaseSetUp.setPassword(EcoZero.getPlugin().getConfig().getString("db-password"));
-            DataBaseSetUp.setUrl(EcoZero.getPlugin().getConfig().getString("db-url"));
-            BotEssentials.setToken(getConfig().getString("bot-token"));
-            BotEssentials.setMinecraftChannelID(getConfig().getString("minecraft-to-discord-channel-id"));
-            BotEssentials.setMinecraftLogID(getConfig().getString("minecraft-logs-channel-id"));
-            BotEssentials.setDiscordVerificationID(getConfig().getString("discord-verification-channel-id"));
-            BotEssentials.setVerifiedRoleID(getConfig().getString("discord-verified-role-id"));
-            BotEssentials.setGuildID(getConfig().getString("guild-id"));
-            // End of Config
 
-            BotEssentials.startBot();
-            DataBaseSetUp.login();
+            setUpDiscordBot();
 
-            // Registering Minecraft Listeners
-            EventUtils.registerMinecraftListeners(EcoZero.getPlugin().getClass().getPackageName() + ".discordintergration.listeners.minecraft");
-            EventUtils.registerMinecraftListeners(EcoZero.getPlugin().getClass().getPackageName() + ".economy.listeners");
+            setUpDataBase();
 
-            // Registering Discord Listeners
-            EventUtils.registerDiscordListeners(EcoZero.getPlugin().getClass().getPackageName() + ".discordintergration.listeners.discord");
+            registerListeners();
 
-            // Commands
-            getCommand("verify").setExecutor(new Verify());
-            getCommand("discorddashboard").setExecutor(new studio.ecoprojects.ecozero.discordintergration.commands.minecraft.DiscordDashboard());
+            registerCommands();
 
-            getCommand("balance").setExecutor(new BalanceCommand());
-            getCommand("balance").setTabCompleter(new BalanceCommand());
-
-            getCommand("economy").setExecutor(new EconomyCommand());
-            getCommand("economy").setTabCompleter(new EconomyCommand());
-
-            getCommand("ecozero").setExecutor(new EcoZeroCommand());
-            getCommand("ecozero").setTabCompleter(new EcoZeroCommand());
-
-            // Random
             if (RandomUtils.getOfflinePlayersNames().isEmpty()) {
                 for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     RandomUtils.addOfflinePlayerName(player.getName());
@@ -79,19 +52,55 @@ public final class EcoZero extends JavaPlugin {
             // Gets the minute number from config and calculates it to Minecraft ticks
             long delay = 20L * (60L * getConfig().getInt("economy-saves-accounts-every"));
             // Saves every account every x (delay) minutes
-            getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-
-                @Override
-                public void run() {
-                    SLAPI.saveAccounts();
-                }
-            }, 0L, delay);
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, SLAPI::saveAccounts, 0L, delay);
 
         } else {
             getLogger().severe("LUCKPERMS IS NEEDED FOR THIS PLUGIN: Please download Luckperms since it's needed");
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
+    }
+
+    private void registerListeners() {
+        // Registering Minecraft Listeners
+        EventUtils.registerMinecraftListeners(EcoZero.getPlugin().getClass().getPackageName() + ".discordintergration.listeners.minecraft");
+        EventUtils.registerMinecraftListeners(EcoZero.getPlugin().getClass().getPackageName() + ".economy.listeners");
+
+        // Registering Discord Listeners
+        EventUtils.registerDiscordListeners(EcoZero.getPlugin().getClass().getPackageName() + ".discordintergration.listeners.discord");
+    }
+
+    private void setUpDiscordBot() {
+        BotEssentials.setToken(getConfig().getString("bot-token"));
+        BotEssentials.setMinecraftChannelID(getConfig().getString("minecraft-to-discord-channel-id"));
+        BotEssentials.setMinecraftLogID(getConfig().getString("minecraft-logs-channel-id"));
+        BotEssentials.setDiscordVerificationID(getConfig().getString("discord-verification-channel-id"));
+        BotEssentials.setVerifiedRoleID(getConfig().getString("discord-verified-role-id"));
+        BotEssentials.setGuildID(getConfig().getString("guild-id"));
+
+        BotEssentials.startBot();
+    }
+
+    private void setUpDataBase() {
+        DataBaseSetUp.setUsername(EcoZero.getPlugin().getConfig().getString("db-username"));
+        DataBaseSetUp.setPassword(EcoZero.getPlugin().getConfig().getString("db-password"));
+        DataBaseSetUp.setUrl(EcoZero.getPlugin().getConfig().getString("db-url"));
+
+        DataBaseSetUp.login();
+    }
+
+    private void registerCommands() {
+        Objects.requireNonNull(getCommand("verify")).setExecutor(new Verify());
+        Objects.requireNonNull(getCommand("discorddashboard")).setExecutor(new studio.ecoprojects.ecozero.discordintergration.commands.minecraft.DiscordDashboard());
+
+        Objects.requireNonNull(getCommand("balance")).setExecutor(new BalanceCommand());
+        Objects.requireNonNull(getCommand("balance")).setTabCompleter(new BalanceCommand());
+
+        Objects.requireNonNull(getCommand("economy")).setExecutor(new EconomyCommand());
+        Objects.requireNonNull(getCommand("economy")).setTabCompleter(new EconomyCommand());
+
+        Objects.requireNonNull(getCommand("ecozero")).setExecutor(new EcoZeroCommand());
+        Objects.requireNonNull(getCommand("ecozero")).setTabCompleter(new EcoZeroCommand());
     }
 
     public static EcoZero getPlugin() {

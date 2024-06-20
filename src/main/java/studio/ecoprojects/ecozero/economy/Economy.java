@@ -1,6 +1,5 @@
 package studio.ecoprojects.ecozero.economy;
 
-import org.bukkit.OfflinePlayer;
 import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.economy.database.EconomyDB;
 
@@ -8,7 +7,7 @@ import java.util.*;
 
 public class Economy {
 
-    private static HashMap<UUID, Double> balances = new HashMap<>();
+    private final static HashMap<UUID, Double> balances = new HashMap<>();
 
 
     public static Double getBalance(UUID uuid) {

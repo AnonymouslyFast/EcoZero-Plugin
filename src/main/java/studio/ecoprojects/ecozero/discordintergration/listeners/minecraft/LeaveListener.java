@@ -14,13 +14,14 @@ import studio.ecoprojects.ecozero.utils.ConfigUtils;
 
 import java.awt.*;
 import java.time.Instant;
+import java.util.Objects;
 
 public class LeaveListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        String prefix = EcoZero.luckperms.getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getPrefix();
+        String prefix = Objects.requireNonNull(EcoZero.luckperms.getUserManager().getUser(player.getUniqueId())).getCachedData().getMetaData().getPrefix();
         if (prefix == null) { prefix = "Default"; }
 
         Color color = Color.red;

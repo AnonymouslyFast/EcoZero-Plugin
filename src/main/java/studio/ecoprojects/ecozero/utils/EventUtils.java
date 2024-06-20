@@ -18,8 +18,8 @@ public class EventUtils {
                         .getDeclaredConstructor()
                         .newInstance();
                 EcoZero.getPlugin().getServer().getPluginManager().registerEvents(listener, EcoZero.getPlugin());
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
+            } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         }
         EcoZero.logger.info("Successfully registered EcoZero Minecraft listeners.");
@@ -33,7 +33,7 @@ public class EventUtils {
                         .newInstance();
                 BotEssentials.jda.addEventListener(listener);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
         EcoZero.logger.info("Successfully registered EcoZero Discord listeners.");

@@ -28,28 +28,23 @@ public class VerifiedDB {
 
     public static void createVerifiedTable() {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
-            handle.execute("CREATE TABLE verified (uuid varchar(255), discord_id varchar(255))");;
+            handle.execute("CREATE TABLE verified (uuid varchar(255), discord_id varchar(255))");
             EcoZero.logger.info("Created 'verified' table.");
         }
     }
 
     public static void addVerified(String Uuid, String UserID) {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
-            handle.execute("INSERT INTO verified (uuid, discord_id) VALUES ('" + Uuid + "', '" + UserID + "')", new Object[0]);
+            handle.execute("INSERT INTO verified (uuid, discord_id) VALUES ('" + Uuid + "', '" + UserID + "')");
         }
     }
 
     public static void removeVerifiedByUUID(String Uuid) {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
-            handle.execute("DELETE FROM verified WHERE uuid='" + Uuid + "'", new Object[0]);
+            handle.execute("DELETE FROM verified WHERE uuid='" + Uuid + "'");
         }
     }
 
-    public static void removeVerifiedByUserID(String UserID) {
-        try (Handle handle = DataBaseSetUp.jdbi.open()) {
-            handle.execute("DELETE FROM verified WHERE discord_id='" + UserID + "'", new Object[0]);
-        }
-    }
 
     public static Optional<String> getUserID(String Uuid) {
 
@@ -58,11 +53,6 @@ public class VerifiedDB {
         }
     }
 
-    public static Optional<String> getUuid(String userID) {
-        try (Handle handle = DataBaseSetUp.jdbi.open()) {
-            return handle.createQuery("SELECT uuid FROM verified WHERE discord_id='" + userID + "'").mapTo(String.class).findOne();
-        }
-    }
 
     public static List<UUID> getVerifiedUUIDS() {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {

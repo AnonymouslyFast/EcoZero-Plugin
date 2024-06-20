@@ -16,21 +16,20 @@ public class DiscordListeners extends ListenerAdapter {
         Member member;
         if (event.getChannel() == BotEssentials.getMinecraftChannel()) {
             member = event.getMember();
-            if (!member.getUser().isBot()) {
+            if (member != null && !member.getUser().isBot()) {
                 Message message = event.getMessage().getReferencedMessage();
                 String msg;
+                msg = event.getMessage().getContentDisplay();
                 if (message != null) {
-                    msg = event.getMessage().getContentDisplay();
                     String author = message.getAuthor().getName();
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&b[&7Discord&b] &f" + member.getEffectiveName() + " (Replying to: " + author + ")&8: &f" + msg));
                 } else {
-                    msg = event.getMessage().getContentDisplay();
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&b[&7Discord&b] &f" + member.getEffectiveName() + "&8: &f" + msg));
                 }
             }
         } else if (event.getChannel() == BotEssentials.getMinecraftLogChannel()) {
             member = event.getMember();
-            if (!member.getUser().isBot()) {
+            if (member != null && !member.getUser().isBot()) {
                 String command = event.getMessage().getContentDisplay();
                 CommandSender console = Bukkit.getConsoleSender();
                 event.getMessage().reply(":white_check_mark: Executed `" + command + "`").complete();

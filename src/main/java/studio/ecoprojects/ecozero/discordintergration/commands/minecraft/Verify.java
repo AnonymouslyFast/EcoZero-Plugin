@@ -16,8 +16,8 @@ import java.util.Random;
 public class Verify implements CommandExecutor {
 
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        Player player = (Player) commandSender;
-        if (player != null && commandSender instanceof Player) {
+        if (commandSender instanceof Player) {
+            Player player = (Player) commandSender;
             if (VerifiedDB.getUserID(player.getUniqueId().toString()).isEmpty()) {
                 if (!VerifyCommand.VerifyCodes.containsKey(player.getUniqueId())) {
                     Random random = new Random();

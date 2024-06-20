@@ -2,6 +2,8 @@ package studio.ecoprojects.ecozero.discordintergration;
 
 import java.awt.Color;
 import java.time.Instant;
+import java.util.Objects;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -28,10 +30,9 @@ public class BotEssentials {
 
     public static void startBot() {
         try {
-            jda = JDABuilder.createDefault(Token).enableIntents(GatewayIntent.MESSAGE_CONTENT, new GatewayIntent[]{GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES}).setAutoReconnect(true).build().awaitReady();
+            jda = JDABuilder.createDefault(Token).enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES).setAutoReconnect(true).build().awaitReady();
             EcoZero.logger.info("Bot is ON");
-        } catch (InterruptedException var1) {
-            InterruptedException e = var1;
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
@@ -40,7 +41,7 @@ public class BotEssentials {
         String serverName = ConfigUtils.getServerName();
         jda.getPresence().setActivity(Activity.playing(serverName + " (" + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers() + ")"));
         EmbedBuilder embed = (new EmbedBuilder()).setColor(Color.green).setDescription(":white_check_mark: **Server Started!**").setTimestamp(Instant.now());
-        jda.getTextChannelById(MinecraftChannelID).sendMessageEmbeds(embed.build()).complete();
+        Objects.requireNonNull(jda.getTextChannelById(MinecraftChannelID)).sendMessageEmbeds(embed.build()).complete();
     }
 
     public static void stopBot() {
@@ -48,7 +49,7 @@ public class BotEssentials {
                 .setColor(Color.red)
                 .setDescription(":x: **Server Stopped!**")
                 .setTimestamp(Instant.now());
-        jda.getTextChannelById(MinecraftChannelID).sendMessageEmbeds(embed.build()).queue();
+        Objects.requireNonNull(jda.getTextChannelById(MinecraftChannelID)).sendMessageEmbeds(embed.build()).queue();
         jda.shutdown();
         EcoZero.logger.info("Bot is OFF");
     }
