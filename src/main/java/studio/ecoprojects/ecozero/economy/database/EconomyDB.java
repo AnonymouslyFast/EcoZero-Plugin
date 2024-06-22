@@ -7,6 +7,8 @@ import studio.ecoprojects.ecozero.utils.DataBaseSetUp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collector;
 
 public class EconomyDB {
 
@@ -66,6 +68,25 @@ public class EconomyDB {
                 values.put(uuid, getBalance(uuid.toString()).get());
             }
         }
+
+        return values;
+    }
+
+    // returns all accounts in db sorted from highest to lowest balance
+    public static SortedMap<Double, UUID> getAccountsSortedLowToHigh() {
+        SortedMap<Double, UUID> values = new TreeMap<>();
+        List<UUID> uuids;
+        try (Handle handle = DataBaseSetUp.jdbi.open()) {
+            uuids = handle.createQuery("SELECT uuid, balance FROM balances ORDER BY balance DESC").mapTo(UUID.class).collectIntoList();
+        }
+
+        for (UUID uuid : uuids) {
+            if (getBalance(uuid.toString()).isPresent()) {
+                values.put(getBalance(uuid.toString()).get(), uuid);
+            }
+        }
+
+
 
         return values;
     }

@@ -19,4 +19,10 @@ commands:
     description: Admin command for economy
   ecozero:
     description: Admin command for EcoZero plugin
+  balancetop:
+    aliases:
+      - baltop
+      - economytop
+    usage: /balancetop
+    description: See the rankings of balances
 

@@ -12,6 +12,7 @@ import studio.ecoprojects.ecozero.economy.SLAPI;
 import studio.ecoprojects.ecozero.economy.commands.BalanceCommand;
 import studio.ecoprojects.ecozero.discordintergration.BotEssentials;
 import studio.ecoprojects.ecozero.discordintergration.commands.minecraft.Verify;
+import studio.ecoprojects.ecozero.economy.commands.BalanceTopCommand;
 import studio.ecoprojects.ecozero.economy.commands.EconomyCommand;
 import studio.ecoprojects.ecozero.utils.DataBaseSetUp;
 import studio.ecoprojects.ecozero.utils.EcoZeroCommand;
@@ -92,6 +93,7 @@ public final class EcoZero extends JavaPlugin {
     private void registerCommands() {
         Objects.requireNonNull(getCommand("verify")).setExecutor(new Verify());
         Objects.requireNonNull(getCommand("discorddashboard")).setExecutor(new studio.ecoprojects.ecozero.discordintergration.commands.minecraft.DiscordDashboard());
+        Objects.requireNonNull(getCommand("balancetop")).setExecutor(new BalanceTopCommand());
 
         Objects.requireNonNull(getCommand("balance")).setExecutor(new BalanceCommand());
         Objects.requireNonNull(getCommand("balance")).setTabCompleter(new BalanceCommand());
