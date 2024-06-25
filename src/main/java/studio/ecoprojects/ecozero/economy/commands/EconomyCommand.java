@@ -10,10 +10,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.economy.Economy;
+import studio.ecoprojects.ecozero.economy.SLAPI;
 import studio.ecoprojects.ecozero.economy.database.EconomyDB;
 import studio.ecoprojects.ecozero.utils.Colors;
 import studio.ecoprojects.ecozero.utils.RandomUtils;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.*;
 
 public class EconomyCommand implements CommandExecutor, TabCompleter {
@@ -39,40 +42,48 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                 if (strings.length != 3) {
                     commandSender.sendMessage("Usage: /economy set <player> <number>");
                 } else {
-                    OfflinePlayer player = Bukkit.getPlayerExact(strings[1]);
-                    double number = Double.parseDouble(strings[2]);
-                    if (player == null || !player.hasPlayedBefore() || number == 0d) {
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(strings[1]);
+                    try {
+                        Double number =  Double.parseDouble(strings[2]);
+                        if (!player.hasPlayedBefore() || Double.isNaN(number)) {
+                            commandSender.sendMessage("Usage: /economy set <player> <number>");
+                        } else {
+                            Economy.setBalance(player.getUniqueId(), number);
+                            if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
+                                    .sendMessage(Colors.translateCodes(prefix + " &fYour balance has been set to: &2&l$&f" + getFormattedBalance(Economy.getBalance(player.getUniqueId()))));
+                            commandSender.sendMessage(
+                                    Colors.translateCodes(prefix + " &fSuccessfully set " + player.getName() + "'s balance to: &2&l$&f" + getFormattedBalance(Economy.getBalance(player.getUniqueId()))));
+                        }
+                    } catch (NumberFormatException exception) {
                         commandSender.sendMessage("Usage: /economy set <player> <number>");
-                    } else {
-                        Economy.setBalance(player.getUniqueId(), number);
-                        if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
-                                .sendMessage(Colors.translateCodes(prefix + " &fYour balance has been set to: &2&l$&f" + Economy.getBalance(player.getUniqueId())));
-                        commandSender.sendMessage(
-                                Colors.translateCodes(prefix + " &fSuccessfully set " + player.getName() + "'s balance to: &2&l$&f" + Economy.getBalance(player.getUniqueId())));
                     }
                 }
 
                 // Command: /economy remove
             } else if (strings[0].equalsIgnoreCase("remove")) {
                 if (strings.length != 3) {
-                    commandSender.sendMessage("Usage: /economy remove <player> <number>");
+                    commandSender.sendMessage("Usage: /economy remove <player> <number> (too many arguments/too little arguments)");
                 } else {
-                    OfflinePlayer player = Bukkit.getPlayerExact(strings[1]);
-                    double number = Double.parseDouble(strings[2]);
-                    if (player == null || !player.hasPlayedBefore() || number == 0d) {
-                        commandSender.sendMessage("Usage: /economy remove <player> <number>");
-                    } else {
-                        double currentBalance = Economy.getBalance(player.getUniqueId());
-                        double balanceSubtracted = currentBalance - number;
-                        if (balanceSubtracted < 0) {
-                            commandSender.sendMessage("Usage: /economy remove <player> <number> (Can't leave player with negative balance!)");
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(strings[1]);
+                    try {
+                        double number = Double.parseDouble(strings[2]);
+                        if (!player.hasPlayedBefore() || Double.isNaN(number)) {
+                            commandSender.sendMessage("Usage: /economy remove <player> <number> (player doesnt exist)");
                         } else {
-                            Economy.setBalance(player.getUniqueId(), balanceSubtracted);
-                            if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
-                                    .sendMessage(Colors.translateCodes(prefix + " &2&l$&f" + number + " has been removed from your balance. &7(Current balance: &2&l$&f " + Economy.getBalance(player.getUniqueId()) + "&7)"));
-                            commandSender.sendMessage(
-                                    Colors.translateCodes(prefix + " &fSuccessfully removed &2&l$&f" + number + " from " + player.getName() + "'s balance &7(their current balance: &2&l&f" + Economy.getBalance(player.getUniqueId()) + "&7)"));
+                            double currentBalance = Economy.getBalance(player.getUniqueId());
+                            double balanceSubtracted = currentBalance - number;
+                            if (!(balanceSubtracted < 0)) {
+                                commandSender.sendMessage("Usage: /economy remove <player> <number> (Can't leave player with negative balance!)");
+                            } else {
+                                Economy.setBalance(player.getUniqueId(), balanceSubtracted);
+                                if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
+                                        .sendMessage(Colors.translateCodes(prefix + " &2&l$&f" + getFormattedBalance(number) + " has been removed from your balance. &7(Current balance: &2&l$&f " + getFormattedBalance(Economy.getBalance(player.getUniqueId())) + "&7)"));
+                                commandSender.sendMessage(
+                                        Colors.translateCodes(prefix + " &fSuccessfully removed &2&l$&f" + getFormattedBalance(number) + " from " + player.getName() + "'s balance &7(their current balance: &2&l&f" + getFormattedBalance(Economy.getBalance(player.getUniqueId())) + "&7)"));
+                            }
                         }
+                    } catch (NumberFormatException exception) {
+                        commandSender.sendMessage("Usage: /economy remove <player> <number>");
                     }
                 }
 
@@ -81,18 +92,22 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                 if (strings.length != 3) {
                     commandSender.sendMessage("Usage: /economy add <player> <number>");
                 } else {
-                    OfflinePlayer player = Bukkit.getPlayerExact(strings[1]);
-                    double number = Double.parseDouble(strings[2]);
-                    if (player == null || !player.hasPlayedBefore() || number == 0d) {
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(strings[1]);
+                    try {
+                        double number = Double.parseDouble(strings[2]);
+                        if (!player.hasPlayedBefore() || Double.isNaN(number)) {
+                            commandSender.sendMessage("Usage: /economy add <player> <number>");
+                        } else {
+                            double currentBalance = Economy.getBalance(player.getUniqueId());
+                            double balanceAdded = currentBalance + number;
+                            Economy.setBalance(player.getUniqueId(), balanceAdded);
+                            if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
+                                    .sendMessage(Colors.translateCodes(prefix + " &2&l$&f" + getFormattedBalance(number) + " has been added tp your balance. &7(Current balance: &2&l$&f " + getFormattedBalance(Economy.getBalance(player.getUniqueId())) + "&7)"));
+                            commandSender.sendMessage(
+                                    Colors.translateCodes(prefix + " &fSuccessfully added &2&l$&f" + getFormattedBalance(number) + " to " + player.getName() + "'s balance &7(their current balance: &2&l&f" + getFormattedBalance(Economy.getBalance(player.getUniqueId())) + "&7)"));
+                        }
+                    } catch (NumberFormatException exception) {
                         commandSender.sendMessage("Usage: /economy add <player> <number>");
-                    } else {
-                        double currentBalance = Economy.getBalance(player.getUniqueId());
-                        double balanceAdded = currentBalance + number;
-                        Economy.setBalance(player.getUniqueId(), balanceAdded);
-                        if (player.isOnline()) Objects.requireNonNull(player.getPlayer())
-                                .sendMessage(Colors.translateCodes(prefix + " &2&l$&f" + number + " has been added tp your balance. &7(Current balance: &2&l$&f " + Economy.getBalance(player.getUniqueId()) + "&7)"));
-                        commandSender.sendMessage(
-                                Colors.translateCodes(prefix + " &fSuccessfully added &2&l$&f" + number + " to " + player.getName() + "'s balance &7(their current balance: &2&l&f" + Economy.getBalance(player.getUniqueId()) + "&7)"));
                     }
                 }
 
@@ -103,17 +118,17 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                 } else {
                     if (strings[1].equalsIgnoreCase("*")) {
                         for (UUID uuid : EconomyDB.getAccounts().keySet()) {
-                            if (Economy.hasAccount(uuid)) {
+                            if (Economy.isCached(uuid)) {
                                 Economy.removeAccount(uuid);
                             }
                         }
                         Bukkit.broadcastMessage(Colors.translateCodes(prefix + " &c&lAll accounts have been removed/purged, please re-log to get a default account."));
                     } else {
-                        OfflinePlayer player = Bukkit.getPlayerExact(strings[1]);
-                        if (player == null || !player.hasPlayedBefore()) {
+                        OfflinePlayer player = Bukkit.getOfflinePlayer(strings[1]);
+                        if (!player.hasPlayedBefore()) {
                             commandSender.sendMessage("Usage: /economy removeaccount <player/*>");
                         } else {
-                            if (!Economy.hasAccount(player.getUniqueId())) {
+                            if (EconomyDB.getBalance(player.getUniqueId().toString()).isEmpty()) {
                                 commandSender.sendMessage("That player does not have an account");
                             } else {
                                 Economy.removeAccount(player.getUniqueId());
@@ -140,8 +155,8 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                         }
                         Bukkit.broadcastMessage(Colors.translateCodes(prefix + " &a&lAll people who don't have an account now have default accounts"));
                     } else {
-                        OfflinePlayer player = Bukkit.getPlayerExact(strings[1]);
-                        if (player == null || !player.hasPlayedBefore()) {
+                        OfflinePlayer player = Bukkit.getOfflinePlayer(strings[1]);
+                        if (!player.hasPlayedBefore()) {
                             commandSender.sendMessage("Usage: /economy createaccount <player/*>");
                         } else {
                             Economy.createAccount(player.getUniqueId());
@@ -153,6 +168,15 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                     }
                 }
 
+                // Command: /economy forcesaveaccounts
+            } else if (strings[0].equalsIgnoreCase("forcesaveaccounts")) {
+                if (strings.length > 1) {
+                    commandSender.sendMessage("Usage: /economy forcesaveaccounts");
+                } else {
+                    commandSender.sendMessage(Colors.translateCodes(prefix + " &fSuccessfully saved all online accounts to the database."));
+                    SLAPI.saveAccounts();
+                }
+
                 // Catch all, if anything slips up it just sends the help message.
             } else {
                 commandSender.sendMessage(helpMessage());
@@ -162,19 +186,31 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private String getFormattedBalance(Double balance) {
+        return NumberFormat.getNumberInstance().format(balance);
+    }
+
     // Help message to be sent to the command sender.
     private String helpMessage() {
-        return Colors.translateCodes("&7=== &2&lEconomy Help &7===" +
-                "\n  &8&l- &f/economy help &8&l- &7brings you to this message" +
-                "\n  &8&l- &f/economy set <player> <number> &8&l- &7sets the balance of the given player to the given amount" +
-                "\n  &8&l- &f/economy remove <player> <number> &8&l- &7removes the given amount from the given player's balance" +
-                "\n  &8&l- &f/economy add <player> <number> &8&l- &7adds the given amount to the given player's balance" +
-                "\n  &8&l- &f/economy removeaccount <player/*> &8&l- &7removes the given players economy account (if put * it removes all accounts)" +
-                "\n  &8&l- &f/economy createaccount <player/*> &8&l- &7creates an account for the given player (if put * it creates accounts for offline and online players who don't have one.)");
+        return Colors.translateCodes("""
+                &7=== &2&lEconomy Help &7===\
+
+                  &8&l- &f/economy help &8&l- &7brings you to this message\
+
+                  &8&l- &f/economy set <player> <number> &8&l- &7sets the balance of the given player to the given amount\
+
+                  &8&l- &f/economy remove <player> <number> &8&l- &7removes the given amount from the given player's balance\
+
+                  &8&l- &f/economy add <player> <number> &8&l- &7adds the given amount to the given player's balance\
+
+                  &8&l- &f/economy removeaccount <player/*> &8&l- &7removes the given players economy account (if put * it removes all accounts)\
+
+                  &8&l- &f/economy createaccount <player/*> &8&l- &7creates an account for the given player (if put * it creates accounts for offline and online players who don't have one.)\
+                  &8&l- &f/economy forcesaveaccounts &8&l- &7Saves all accounts to database""");
 
     }
 
-    private final List<String> arguments1 = Arrays.asList("add", "remove", "set", "help", "removeaccount", "createaccount");
+    private final List<String> arguments1 = Arrays.asList("add", "remove", "set", "help", "removeaccount", "createaccount", "forcesaveaccounts");
     private final List<String> arguments3 = Arrays.asList("1", "8", "16", "32", "64", "128");
 
 
@@ -184,19 +220,21 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
 
-        if (strings.length == 1) {
-            return arguments1;
-        } else if (strings.length == 2) {
-            if (strings[0].equalsIgnoreCase("set") || strings[0].equalsIgnoreCase("add") || strings[0].equalsIgnoreCase("remove") ) {
-                return RandomUtils.getOfflinePlayersNames();
-            } else if (strings[0].equalsIgnoreCase("createaccount") || strings[0].equalsIgnoreCase("removeaccount")) {
-                List<String> args = RandomUtils.getOfflinePlayersNames();
-                args.add("*");
-                return args;
-            }
-        } else if (strings.length == 3) {
-            if (strings[0].equalsIgnoreCase("set") || strings[0].equalsIgnoreCase("add") || strings[0].equalsIgnoreCase("remove") ) {
-                return arguments3;
+        if (commandSender.hasPermission("economy.admin")) {
+            if (strings.length == 1) {
+                return arguments1;
+            } else if (strings.length == 2) {
+                if (strings[0].equalsIgnoreCase("set") || strings[0].equalsIgnoreCase("add") || strings[0].equalsIgnoreCase("remove") ) {
+                    return RandomUtils.getOfflinePlayersNames();
+                } else if (strings[0].equalsIgnoreCase("createaccount") || strings[0].equalsIgnoreCase("removeaccount")) {
+                    List<String> args = RandomUtils.getOfflinePlayersNames();
+                    args.add("*");
+                    return args;
+                }
+            } else if (strings.length == 3) {
+                if (strings[0].equalsIgnoreCase("set") || strings[0].equalsIgnoreCase("add") || strings[0].equalsIgnoreCase("remove") ) {
+                    return arguments3;
+                }
             }
         }
 

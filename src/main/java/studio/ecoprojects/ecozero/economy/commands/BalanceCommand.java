@@ -9,10 +9,12 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.ecoprojects.ecozero.economy.BalanceFormatter;
 import studio.ecoprojects.ecozero.economy.Economy;
 import studio.ecoprojects.ecozero.utils.Colors;
 import studio.ecoprojects.ecozero.utils.RandomUtils;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 
@@ -26,20 +28,16 @@ public class BalanceCommand implements CommandExecutor, TabCompleter {
             Player player = (Player) commandSender;
             OfflinePlayer target = null;
             if (strings.length == 1) {
-                target = Bukkit.getPlayerExact(strings[0]);
-                if (target == null) {
+                target = Bukkit.getOfflinePlayer(strings[0]);
+                if (!player.hasPlayedBefore()) {
                     player.sendMessage(Colors.translateCodes("&cThat player does not exist"));
                     return true;
                 }
             }
             if (target == null) target = player;
-            if (Economy.hasAccount(target.getUniqueId())) {
-                String balanace = Economy.getBalance(target.getUniqueId()).toString();
-                String[] bal = balanace.split("\\.");
-                if (bal[1].isEmpty() || bal[1].equalsIgnoreCase("0")) {
-                    balanace = bal[0];
-                }
-                player.sendMessage(Colors.translateCodes("&2&l" + target.getName() + "'s balance is: &f" + balanace));
+            if (Economy.getBalance(player.getUniqueId()) != null) {
+                String balanace = NumberFormat.getNumberInstance().format(Economy.getBalance(target.getUniqueId()));
+                player.sendMessage(Colors.translateCodes("&2&l" + target.getName() + "'s balance is: $&f" + balanace));
             } else {
                 player.sendMessage(Colors.translateCodes("&cThat player does not have an Account"));
             }

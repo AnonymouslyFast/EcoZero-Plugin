@@ -3,6 +3,7 @@ package studio.ecoprojects.ecozero.economy;
 import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.economy.database.EconomyDB;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Economy {
@@ -11,11 +12,16 @@ public class Economy {
 
 
     public static Double getBalance(UUID uuid) {
+        if (balances.get(uuid) == null) {
+            if (EconomyDB.getBalance(uuid.toString()).isPresent()) {
+                return EconomyDB.getBalance(uuid.toString()).get();
+            }
+        }
         return balances.get(uuid);
     }
 
     public static void setBalance(UUID uuid, Double value) {
-        if (hasAccount(uuid)) {
+        if (isCached(uuid)) {
             balances.replace(uuid, getBalance(uuid), value);
         } else {
             balances.put(uuid, value);
@@ -23,12 +29,12 @@ public class Economy {
 
     }
 
-    public static Boolean hasAccount(UUID uuid) {
+    public static Boolean isCached(UUID uuid) {
         return balances.containsKey(uuid);
     }
 
     public static void createAccount(UUID uuid) {
-        if (!hasAccount(uuid)) {
+        if (!isCached(uuid)) {
             balances.put(uuid, EcoZero.getPlugin().getConfig().getDouble("starting-balance"));
         }
     }

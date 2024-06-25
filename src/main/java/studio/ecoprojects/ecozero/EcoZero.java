@@ -3,7 +3,10 @@ package studio.ecoprojects.ecozero;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Logger;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
@@ -14,6 +17,7 @@ import studio.ecoprojects.ecozero.discordintergration.BotEssentials;
 import studio.ecoprojects.ecozero.discordintergration.commands.minecraft.Verify;
 import studio.ecoprojects.ecozero.economy.commands.BalanceTopCommand;
 import studio.ecoprojects.ecozero.economy.commands.EconomyCommand;
+import studio.ecoprojects.ecozero.economy.commands.PayCommand;
 import studio.ecoprojects.ecozero.utils.DataBaseSetUp;
 import studio.ecoprojects.ecozero.utils.EcoZeroCommand;
 import studio.ecoprojects.ecozero.utils.EventUtils;
@@ -23,6 +27,7 @@ public final class EcoZero extends JavaPlugin {
     public static Logger logger;
     public static LuckPerms luckperms;
     private static EcoZero plugin;
+    private static final List<UUID> operatorsUUIDS = new ArrayList<>();
 
     public void onEnable() {
         plugin = this;
@@ -44,6 +49,8 @@ public final class EcoZero extends JavaPlugin {
 
             registerCommands();
 
+            reloadOperatorUUIDS();
+
             if (RandomUtils.getOfflinePlayersNames().isEmpty()) {
                 for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     RandomUtils.addOfflinePlayerName(player.getName());
@@ -53,7 +60,11 @@ public final class EcoZero extends JavaPlugin {
             // Gets the minute number from config and calculates it to Minecraft ticks
             long delay = 20L * (60L * getConfig().getInt("economy-saves-accounts-every"));
             // Saves every account every x (delay) minutes
-            getServer().getScheduler().scheduleSyncRepeatingTask(this, SLAPI::saveAccounts, 0L, delay);
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+                SLAPI.saveAccounts();
+                reloadOperatorUUIDS();
+                logger.info("Saved economy accounts to database");
+            }, 0L, delay);
 
         } else {
             getLogger().severe("LUCKPERMS IS NEEDED FOR THIS PLUGIN: Please download Luckperms since it's needed");
@@ -95,6 +106,9 @@ public final class EcoZero extends JavaPlugin {
         Objects.requireNonNull(getCommand("discorddashboard")).setExecutor(new studio.ecoprojects.ecozero.discordintergration.commands.minecraft.DiscordDashboard());
         Objects.requireNonNull(getCommand("balancetop")).setExecutor(new BalanceTopCommand());
 
+        Objects.requireNonNull(getCommand("pay")).setExecutor(new PayCommand());
+        Objects.requireNonNull(getCommand("pay")).setTabCompleter(new PayCommand());
+
         Objects.requireNonNull(getCommand("balance")).setExecutor(new BalanceCommand());
         Objects.requireNonNull(getCommand("balance")).setTabCompleter(new BalanceCommand());
 
@@ -107,6 +121,18 @@ public final class EcoZero extends JavaPlugin {
 
     public static EcoZero getPlugin() {
         return plugin;
+    }
+
+    private void reloadOperatorUUIDS() {
+        for (OfflinePlayer player : Bukkit.getOperators()) {
+            if (!operatorsUUIDS.contains(player.getUniqueId())) {
+                operatorsUUIDS.add(player.getUniqueId());
+            }
+        }
+    }
+
+    public static List<UUID> getOperatorUUIDS() {
+        return operatorsUUIDS;
     }
 
     public void onDisable() {

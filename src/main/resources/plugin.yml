@@ -25,4 +25,7 @@ commands:
       - economytop
     usage: /balancetop
     description: See the rankings of balances
+  pay:
+    usage: /pay <online player> <number>
+    description: give money to a specified player
 

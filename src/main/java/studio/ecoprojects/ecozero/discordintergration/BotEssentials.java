@@ -97,7 +97,7 @@ public class BotEssentials {
     }
 
     public static void setGuildID(String guildiD) {
-        if (guildID == null || guildID.isEmpty()) {
+        if (guildiD == null || guildiD.isEmpty()) {
             EcoZero.logger.severe("Please Provide the guild-id so I can access the guild.");
         } else {
             guildID = guildiD;

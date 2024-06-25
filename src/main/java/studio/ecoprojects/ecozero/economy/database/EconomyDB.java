@@ -4,6 +4,7 @@ import org.jdbi.v3.core.Handle;
 import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.utils.DataBaseSetUp;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -26,9 +27,10 @@ public class EconomyDB {
         return false;
     }
 
+
     public static void createBalancesTable() {
         try (Handle handle = DataBaseSetUp.jdbi.open()) {
-            handle.execute("CREATE TABLE balances (uuid varchar(255), balance double)");
+            handle.execute("CREATE TABLE balances (uuid VARCHAR(255), balance DOUBLE)");
             EcoZero.logger.info("Created 'balances' table.");
         }
     }

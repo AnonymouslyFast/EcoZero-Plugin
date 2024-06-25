@@ -14,7 +14,7 @@ public class EconomyListeners implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         if (!e.getPlayer().hasPlayedBefore()) RandomUtils.addOfflinePlayerName(e.getPlayer().getName());
-        if (!Economy.hasAccount(e.getPlayer().getUniqueId())) {
+        if (!Economy.isCached(e.getPlayer().getUniqueId())) {
             if (EconomyDB.getBalance(e.getPlayer().getUniqueId().toString()).isPresent()) {
                 SLAPI.loadAccount(e.getPlayer());
             } else {
