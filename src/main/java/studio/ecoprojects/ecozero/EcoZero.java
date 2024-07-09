@@ -1,6 +1,8 @@
 package studio.ecoprojects.ecozero;
 
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -12,12 +14,14 @@ import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import studio.ecoprojects.ecozero.economy.SLAPI;
+import studio.ecoprojects.ecozero.economy.VaultSetUp;
 import studio.ecoprojects.ecozero.economy.commands.BalanceCommand;
 import studio.ecoprojects.ecozero.discordintergration.BotEssentials;
 import studio.ecoprojects.ecozero.discordintergration.commands.minecraft.Verify;
 import studio.ecoprojects.ecozero.economy.commands.BalanceTopCommand;
 import studio.ecoprojects.ecozero.economy.commands.EconomyCommand;
 import studio.ecoprojects.ecozero.economy.commands.PayCommand;
+import studio.ecoprojects.ecozero.economy.shop.commands.ShopCommand;
 import studio.ecoprojects.ecozero.utils.DataBaseSetUp;
 import studio.ecoprojects.ecozero.utils.EcoZeroCommand;
 import studio.ecoprojects.ecozero.utils.EventUtils;
@@ -51,6 +55,10 @@ public final class EcoZero extends JavaPlugin {
 
             reloadOperatorUUIDS();
 
+            // Setting up Vault Economy
+            getServer().getServicesManager().register(Economy.class, new VaultSetUp(), this, ServicePriority.High);
+
+            // Sets offline players on start.
             if (RandomUtils.getOfflinePlayersNames().isEmpty()) {
                 for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     RandomUtils.addOfflinePlayerName(player.getName());
@@ -77,6 +85,7 @@ public final class EcoZero extends JavaPlugin {
         // Registering Minecraft Listeners
         EventUtils.registerMinecraftListeners(EcoZero.getPlugin().getClass().getPackageName() + ".discordintergration.listeners.minecraft");
         EventUtils.registerMinecraftListeners(EcoZero.getPlugin().getClass().getPackageName() + ".economy.listeners");
+        EventUtils.registerMinecraftListeners(EcoZero.getPlugin().getClass().getPackageName() + ".economy.shop.listeners");
 
         // Registering Discord Listeners
         EventUtils.registerDiscordListeners(EcoZero.getPlugin().getClass().getPackageName() + ".discordintergration.listeners.discord");
@@ -114,6 +123,9 @@ public final class EcoZero extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("economy")).setExecutor(new EconomyCommand());
         Objects.requireNonNull(getCommand("economy")).setTabCompleter(new EconomyCommand());
+
+        Objects.requireNonNull(getCommand("shop")).setExecutor(new ShopCommand());
+        Objects.requireNonNull(getCommand("shop")).setTabCompleter(new ShopCommand());
 
         Objects.requireNonNull(getCommand("ecozero")).setExecutor(new EcoZeroCommand());
         Objects.requireNonNull(getCommand("ecozero")).setTabCompleter(new EcoZeroCommand());

@@ -28,4 +28,7 @@ commands:
   pay:
     usage: /pay <online player> <number>
     description: give money to a specified player
+  shop:
+    usage: /shop
+    description: Opens a gui to buy stuff.
 
