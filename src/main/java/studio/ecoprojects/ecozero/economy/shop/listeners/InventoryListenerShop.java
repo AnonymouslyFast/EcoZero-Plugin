@@ -18,7 +18,7 @@ public class InventoryListenerShop implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         Shop shop = Economy.getShop();
-        if (e.getView().getTitle().equalsIgnoreCase(Colors.translateCodes(shop.getShopInventoryName()))) {
+        if (e.getView().getTitle().equalsIgnoreCase(Colors.translateCodes("&2&lShop"))) {
             e.setCancelled(true);
             SubShop.getSubShops().forEach(subShop -> {
                 if (e.getSlot() == subShop.getShopSlot()) {

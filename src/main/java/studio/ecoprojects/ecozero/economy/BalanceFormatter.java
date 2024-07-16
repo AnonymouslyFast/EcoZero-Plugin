@@ -1,6 +1,7 @@
+// Made by Equips friend
+
 package studio.ecoprojects.ecozero.economy;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;

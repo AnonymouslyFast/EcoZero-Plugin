@@ -17,7 +17,7 @@ public class ShopCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
 
         if (commandSender instanceof Player player) {
-            player.openInventory(Economy.getShop().createShopGui());
+            player.openInventory(Economy.getShop().getShopInventory());
         } else {
             commandSender.sendMessage("Cannot use this command in console!");
         }

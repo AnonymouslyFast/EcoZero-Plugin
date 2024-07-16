@@ -1,12 +1,12 @@
 package studio.ecoprojects.ecozero.economy.shop.subshops;
 
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import studio.ecoprojects.ecozero.economy.Economy;
-import studio.ecoprojects.ecozero.economy.shop.Shop;
-import studio.ecoprojects.ecozero.economy.shop.ShopItem;
+import studio.ecoprojects.ecozero.economy.shop.Product;
 import studio.ecoprojects.ecozero.economy.shop.SubShop;
 import studio.ecoprojects.ecozero.utils.Colors;
 import studio.ecoprojects.ecozero.utils.ItemUtils;
@@ -17,51 +17,19 @@ import java.util.List;
 
 public class SubShopOres extends SubShop {
 
-    private final List<ShopItem> items = new ArrayList<>();
 
     public SubShopOres() {
         setSubShop();
         setItems();
-        addSubShop(getSubShop());
+        addSubShop(this);
    }
 
-    public List<ShopItem> getItems() {
-        return items;
-    }
 
-    // dupe lines for testing purposes.
+
     private void setItems() {
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
-        items.add(new ShopItem(Material.COAL_ORE, "Coal Ore",15d, 6d));
+        for (int i = 0; i < 50; i++) {
+            this.addProduct(new Product(Material.COAL_ORE, "Coal Ore",15d, 6d, this));
+        }
     }
 
 
@@ -76,14 +44,31 @@ public class SubShopOres extends SubShop {
    }
 
    @Override
-   public Inventory getInventory(Integer page) {
+   public Inventory getInventory(int page) {
         boolean hasNextPage = false;
         boolean hasPastPage = false;
-        if (items.size() > 35*page) hasNextPage = true;
-        if (page > 1) hasPastPage = true;
-        Inventory inventory = Economy.getShop().createSubShopGUITemplate(Colors.translateCodes(getShopInventoryName()), hasPastPage, hasNextPage);
+        String title = Colors.translateCodes(getShopInventoryName());
+        if (this.getAmountOfProducts() > 21) hasNextPage = true;
+        if (page > 1) {
+            hasPastPage = true;
+            title = Colors.translateCodes(getShopInventoryName() + " &7(" + page + ")");
+            if (items.size() > 21*page) {
+                hasNextPage = true;
+            } else {
+                hasNextPage = false;
+            }
+        }
+        Inventory inventory = Economy.getShop().createSubShopGUITemplate(title, hasPastPage, hasNextPage);
         int nextSlot = 10;
-        for (ShopItem item : items) {
+        List<Product> tempItems = new ArrayList<>(getItems());
+        if (hasNextPage) {
+            for (int i = 0; i < tempItems.size(); i++) {
+                if (i <= 21*(page-1)) {
+                    tempItems.remove(i);
+                }
+            }
+        }
+        for (ShopItem item : tempItems) {
             if (nextSlot == 17 || nextSlot == 18) { nextSlot = 19; }
             if (nextSlot == 26 || nextSlot == 27) { nextSlot = 28; }
             if (nextSlot > 34) { break; }
@@ -98,6 +83,11 @@ public class SubShopOres extends SubShop {
                             Colors.translateCodes("  &7Buy price: &2&l$&f" + formatedBuyPrice),
                             Colors.translateCodes("  &7Sell price: &2&l$&f" + formatedSellPrice),
                             Colors.translateCodes("&7Left click to buy, right click to sell.")));
+
+
+            NBT.modify(icon, nbt -> {
+                nbt.setUUID("ItemUUID", item.getUuid());
+            });
 
             inventory.setItem(nextSlot, icon);
 

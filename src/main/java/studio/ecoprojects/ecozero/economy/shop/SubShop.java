@@ -1,6 +1,7 @@
 package studio.ecoprojects.ecozero.economy.shop;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -9,16 +10,14 @@ import java.util.*;
 public class SubShop {
 
     private static final List<SubShop> subShops = new ArrayList<>();
+    private HashMap<UUID, Integer> openedPages = new HashMap<>();
+    private List<Product> products = new ArrayList<>();
 
     private String shopName;
     private ItemStack shopIcon;
     private Integer shopSlot;
-    private final HashMap<Material, Double> shopItems = new HashMap<>();
     private String shopInventoryName = null;
 
-    public SubShop getSubShop() {
-        return this;
-    }
 
     public void setShopName(String name) {
         shopName = name;
@@ -45,11 +44,11 @@ public class SubShop {
         shopSlot = slot;
     }
 
-    public Integer getShopSlot() {
+    public int getShopSlot() {
         return shopSlot;
     }
 
-    public Inventory getInventory(Integer page) {
+    public Inventory getInventory(int page) {
         return null;
     }
 
@@ -61,4 +60,24 @@ public class SubShop {
         subShops.add(subShop);
     }
 
+    public void addPlayerToPage(Player player, int page) {
+        this.openedPages.put(player.getUniqueId(), page);
+    }
+    public void removePlayerFromPage(Player player) {
+        this.openedPages.remove(player.getUniqueId());
+    }
+    public boolean shopPageContainsPlayer(Player player) {
+        return this.openedPages.containsKey(player.getUniqueId());
+    }
+    public int getShopPagePlayerIsOn(Player player) {
+        return this.openedPages.get(player.getUniqueId());
+    }
+
+    public void addProduct(Product product) {
+        this.products.add(product);
+    }
+
+    public int getAmountOfProducts() {
+        return this.products.size();
+    }
 }

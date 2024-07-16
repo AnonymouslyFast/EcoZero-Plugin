@@ -3,6 +3,7 @@ version: '${project.version}'
 main: studio.ecoprojects.ecozero.EcoZero
 description: EcoZero's main plugin
 api-version: '1.20'
+depend: [NBTAPI]
 commands:
   verify:
     description: Verify your discord and minecraft account for rewards!
