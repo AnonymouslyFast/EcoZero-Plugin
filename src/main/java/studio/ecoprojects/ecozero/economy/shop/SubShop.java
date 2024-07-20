@@ -3,81 +3,65 @@ package studio.ecoprojects.ecozero.economy.shop;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import studio.ecoprojects.ecozero.economy.Economy;
+import studio.ecoprojects.ecozero.economy.shop.inventories.SubShopTemplate;
+import studio.ecoprojects.ecozero.utils.Colors;
 
-import java.util.*;
+import java.text.NumberFormat;
+import java.util.List;
 
 public class SubShop {
 
-    private static final List<SubShop> subShops = new ArrayList<>();
-    private HashMap<UUID, Integer> openedPages = new HashMap<>();
-    private List<Product> products = new ArrayList<>();
+    private String displayName;
+    private ItemStack icon;
+    private int slot;
+    private List<Product> products;
+    private final Inventory inventory = Economy.getShop().getSubShopTemplate();
 
-    private String shopName;
-    private ItemStack shopIcon;
-    private Integer shopSlot;
-    private String shopInventoryName = null;
-
-
-    public void setShopName(String name) {
-        shopName = name;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+    public String getDisplayName() {
+        return this.displayName;
     }
 
-    public String getShopInventoryName() {
-        return shopInventoryName;
+    public void setSlot(int slot) {
+        this.slot = slot;
+    }
+    public int getSlot() {
+        return this.slot;
     }
 
-    public String getShopName() {
-        return shopName;
+    public void setIcon(Material material) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(this.displayName);
+            meta.setLore(List.of(Colors.translateCodes("&7Click to open the sub shop: " + this.displayName + "&7.")));
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item.setItemMeta(meta);
+        }
+        this.icon = item;
+    }
+    public ItemStack getIcon() {
+        return this.icon;
     }
 
-    public void setShopIcon(ItemStack icon) {
-        shopIcon = icon;
-        shopInventoryName = "&2&lShop &7>> " + Objects.requireNonNull(icon.getItemMeta()).getDisplayName();
+    public void setProducts(List<Product> products) {
+        this.products = products;
+        Economy.getShop().addProducts(products);
     }
-
-    public ItemStack getShopIcon() {
-        return shopIcon;
-    }
-
-    public void setShopSlot(Integer slot) {
-        shopSlot = slot;
-    }
-
-    public int getShopSlot() {
-        return shopSlot;
+    public List<Product> getProducts() {
+        return this.products;
     }
 
     public Inventory getInventory(int page) {
-        return null;
+        return this.inventory;
     }
 
-    public static List<SubShop> getSubShops() {
-        return subShops;
-    }
 
-    public static void addSubShop(SubShop subShop) {
-        subShops.add(subShop);
-    }
 
-    public void addPlayerToPage(Player player, int page) {
-        this.openedPages.put(player.getUniqueId(), page);
-    }
-    public void removePlayerFromPage(Player player) {
-        this.openedPages.remove(player.getUniqueId());
-    }
-    public boolean shopPageContainsPlayer(Player player) {
-        return this.openedPages.containsKey(player.getUniqueId());
-    }
-    public int getShopPagePlayerIsOn(Player player) {
-        return this.openedPages.get(player.getUniqueId());
-    }
-
-    public void addProduct(Product product) {
-        this.products.add(product);
-    }
-
-    public int getAmountOfProducts() {
-        return this.products.size();
-    }
 }

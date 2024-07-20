@@ -1,68 +1,48 @@
 package studio.ecoprojects.ecozero.economy.shop;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
 
 public class Product {
 
-
-    private final Material material;
-    private final Double buyPrice;
-    private final Double sellPrice;
-    private final String displayName;
-    private final UUID uuid;
+    private final String productName;
+    private final double buyPrice;
+    private final double sellPrice;
+    private final Material productMaterial;
+    private final UUID productUUID;
     private final SubShop subShop;
-    private Inventory buyInventory;
-    private Inventory sellInventory;
 
-    public Product(Material mat, String displayName, Double buyPrice, Double sellPrice, SubShop subShop) {
-        this.material = mat;
+    public Product(Material productMaterial, String productName, double buyPrice, double sellPrice, SubShop subShop) {
+        this.productMaterial = productMaterial;
+        this.productName = productName;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
-        this.displayName = displayName;
+        this.productUUID = UUID.randomUUID();
         this.subShop = subShop;
-        this.uuid = UUID.randomUUID();
     }
 
-    public Material getMaterial() {
-        return material;
+    public String getProductName() {
+        return productName;
     }
 
-    public Double getBuyPrice() {
+    public double getBuyPrice() {
         return buyPrice;
     }
 
-    public Double getSellPrice() {
+    public double getSellPrice() {
         return sellPrice;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public Material getMaterial() {
+        return productMaterial;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getProductUUID() {
+        return productUUID;
     }
 
     public SubShop getSubShop() {
         return subShop;
-    }
-
-    public Inventory getSellInventory() {
-        return sellInventory;
-    }
-
-    public void setSellInventory(Inventory sellInventory) {
-        this.sellInventory = sellInventory;
-    }
-
-    public Inventory getBuyInventory() {
-        return buyInventory;
-    }
-
-    public void setBuyInventory(Inventory buyInventory) {
-        this.buyInventory = buyInventory;
     }
 }

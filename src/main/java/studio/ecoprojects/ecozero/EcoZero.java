@@ -121,11 +121,11 @@ public final class EcoZero extends JavaPlugin {
         Objects.requireNonNull(getCommand("balance")).setExecutor(new BalanceCommand());
         Objects.requireNonNull(getCommand("balance")).setTabCompleter(new BalanceCommand());
 
-        Objects.requireNonNull(getCommand("economy")).setExecutor(new EconomyCommand());
-        Objects.requireNonNull(getCommand("economy")).setTabCompleter(new EconomyCommand());
-
         Objects.requireNonNull(getCommand("shop")).setExecutor(new ShopCommand());
         Objects.requireNonNull(getCommand("shop")).setTabCompleter(new ShopCommand());
+
+        Objects.requireNonNull(getCommand("economy")).setExecutor(new EconomyCommand());
+        Objects.requireNonNull(getCommand("economy")).setTabCompleter(new EconomyCommand());
 
         Objects.requireNonNull(getCommand("ecozero")).setExecutor(new EcoZeroCommand());
         Objects.requireNonNull(getCommand("ecozero")).setTabCompleter(new EcoZeroCommand());

@@ -31,5 +31,4 @@ commands:
     description: give money to a specified player
   shop:
     usage: /shop
-    description: Opens a gui to buy stuff.
-
+    description: Opens a shop inventory to the sender
