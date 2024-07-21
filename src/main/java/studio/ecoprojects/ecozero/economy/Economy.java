@@ -4,13 +4,13 @@ import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.economy.database.EconomyDB;
 import studio.ecoprojects.ecozero.economy.shop.Shop;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 public class Economy {
 
     private final static HashMap<UUID, Double> balances = new HashMap<>();
     private final static Shop shop = new Shop();
+
 
 
     public static Double getBalance(UUID uuid) {
@@ -49,6 +49,7 @@ public class Economy {
     public static Set<UUID> getBalanceKeySet() {
         return balances.keySet();
     }
+
 
     public static Shop getShop() {
         return shop;

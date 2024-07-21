@@ -12,9 +12,20 @@ import java.util.UUID;
 
 public class Shop {
 
+    // SubShops
+    private final SubShopOres subShopOres = new SubShopOres();
+
     // Inventories
     private final Inventory subShopTemplate = new SubShopTemplate().getInventory();
     private final Inventory shopInventory = new ShopInventory().getInventory();
+
+    // Lists
+    private final HashMap<UUID, Product> allProducts = new HashMap<>();
+    private final List<SubShop> subShops = new ArrayList<>();
+
+    public SubShopOres getSubShopOres() {
+        return subShopOres;
+    }
 
     public Inventory getSubShopTemplate() {
         return subShopTemplate;
@@ -23,10 +34,6 @@ public class Shop {
     public Inventory getShopInventory() {
         return shopInventory;
     }
-
-    // Lists
-    private final HashMap<UUID, Product> allProducts = new HashMap<>();
-    private final List<SubShop> subShops = new ArrayList<>();
 
     public void addProducts(List<Product> products) {
         for (Product product : products) {
@@ -46,10 +53,4 @@ public class Shop {
         return subShops;
     }
 
-    // SubShops
-    private final SubShopOres subShopOres = new SubShopOres();
-
-    public SubShopOres getSubShopOres() {
-        return subShopOres;
-    }
 }
