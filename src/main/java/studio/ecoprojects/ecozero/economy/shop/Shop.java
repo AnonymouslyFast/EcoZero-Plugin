@@ -13,15 +13,22 @@ import java.util.UUID;
 public class Shop {
 
     // SubShops
-    private final SubShopOres subShopOres = new SubShopOres();
+    private final SubShopOres subShopOres;
 
     // Inventories
-    private final Inventory subShopTemplate = new SubShopTemplate().getInventory();
-    private final Inventory shopInventory = new ShopInventory().getInventory();
+    private final Inventory subShopTemplate;
+    private final Inventory shopInventory;
 
     // Lists
     private final HashMap<UUID, Product> allProducts = new HashMap<>();
     private final List<SubShop> subShops = new ArrayList<>();
+
+    public Shop() {
+        subShopOres = new SubShopOres();
+        shopInventory = new ShopInventory().getInventory();
+        subShopTemplate = new SubShopTemplate().getInventory();
+    }
+
 
     public SubShopOres getSubShopOres() {
         return subShopOres;

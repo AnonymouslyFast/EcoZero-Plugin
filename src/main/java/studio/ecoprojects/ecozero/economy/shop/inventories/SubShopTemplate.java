@@ -13,14 +13,14 @@ import java.util.List;
 
 public class SubShopTemplate {
 
-    private Inventory inventory;
+    private final Inventory inventory;
 
     public SubShopTemplate() {
+        inventory = Bukkit.createInventory(null, 54, "PLACEHOLDER");
         createInventory();
     }
 
     private void createInventory() {
-        inventory = Bukkit.createInventory(null, 54, "PLACEHOLDER");
         ItemStack[] backFills = new ItemStack[0];
         ItemStack backfill = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemUtils.setItemName(backfill, "&7");

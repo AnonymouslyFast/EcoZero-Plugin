@@ -9,7 +9,11 @@ import java.util.*;
 public class Economy {
 
     private final static HashMap<UUID, Double> balances = new HashMap<>();
-    private final static Shop shop = new Shop();
+    private static Shop shop;
+
+    public Economy() {
+        shop = new Shop();
+    }
 
 
 

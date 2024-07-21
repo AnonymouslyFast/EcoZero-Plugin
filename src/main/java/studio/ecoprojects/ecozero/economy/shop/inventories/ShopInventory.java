@@ -14,10 +14,18 @@ import java.util.List;
 
 public class ShopInventory {
 
-    Inventory inventory = Bukkit.createInventory(null, 54, Colors.translateCodes("&2&lShop"));
+    private final Inventory inventory;
+
+    public ShopInventory() {
+        inventory = Bukkit.createInventory(null, 54, Colors.translateCodes("&2&lShop"));
+        createInventory();
+    }
 
     public Inventory getInventory() {
+        return inventory;
+    }
 
+    private void createInventory() {
         ItemStack[] backFills = new ItemStack[0];
         ItemStack backfill = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemUtils.setItemName(backfill, "&7");
@@ -44,8 +52,6 @@ public class ShopInventory {
         ItemUtils.setItemFlags(close, ItemFlag.HIDE_ATTRIBUTES);
 
         inventory.setItem(inventory.getSize() - 5, close);
-
-        return inventory;
     }
 
 }
