@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ShopInventory {
 
-    private final Inventory inventory;
+    private Inventory inventory;
 
     public ShopInventory() {
         inventory = Bukkit.createInventory(null, 54, Colors.translateCodes("&2&lShop"));
@@ -22,6 +22,10 @@ public class ShopInventory {
     }
 
     public Inventory getInventory() {
+        if (inventory == null) {
+            inventory = Bukkit.createInventory(null, 54, Colors.translateCodes("&2&lShop"));
+            createInventory();
+        }
         return inventory;
     }
 

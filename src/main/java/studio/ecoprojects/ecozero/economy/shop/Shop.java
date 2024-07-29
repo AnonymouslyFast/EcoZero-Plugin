@@ -1,6 +1,7 @@
 package studio.ecoprojects.ecozero.economy.shop;
 
 import org.bukkit.inventory.Inventory;
+import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.economy.shop.inventories.ShopInventory;
 import studio.ecoprojects.ecozero.economy.shop.inventories.SubShopTemplate;
 import studio.ecoprojects.ecozero.economy.shop.subshops.SubShopOres;
@@ -13,20 +14,24 @@ import java.util.UUID;
 public class Shop {
 
     // SubShops
-    private final SubShopOres subShopOres;
+    private SubShopOres subShopOres;
 
     // Inventories
-    private final Inventory subShopTemplate;
-    private final Inventory shopInventory;
+    private Inventory subShopTemplate;
+    private Inventory shopInventory;
 
     // Lists
     private final HashMap<UUID, Product> allProducts = new HashMap<>();
     private final List<SubShop> subShops = new ArrayList<>();
 
     public Shop() {
-        subShopOres = new SubShopOres();
-        shopInventory = new ShopInventory().getInventory();
-        subShopTemplate = new SubShopTemplate().getInventory();
+        try {
+            subShopOres = new SubShopOres();
+            shopInventory = new ShopInventory().getInventory();
+            subShopTemplate = new SubShopTemplate().getInventory();
+        } catch (NullPointerException e) {
+            EcoZero.logger.info("Something is null!!");
+        }
     }
 
 

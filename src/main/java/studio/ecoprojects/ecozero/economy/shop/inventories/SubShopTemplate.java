@@ -13,11 +13,19 @@ import java.util.List;
 
 public class SubShopTemplate {
 
-    private final Inventory inventory;
+    private Inventory inventory;
 
     public SubShopTemplate() {
         inventory = Bukkit.createInventory(null, 54, "PLACEHOLDER");
         createInventory();
+    }
+
+    public Inventory getInventory() {
+        if (inventory == null) {
+            inventory = Bukkit.createInventory(null, 54, "PLACEHOLDER");
+            createInventory();
+        }
+        return inventory;
     }
 
     private void createInventory() {
@@ -44,9 +52,5 @@ public class SubShopTemplate {
 
         inventory.setItem(inventory.getSize() - 5, backToShop);
 
-    }
-
-    public Inventory getInventory() {
-        return inventory;
     }
 }
