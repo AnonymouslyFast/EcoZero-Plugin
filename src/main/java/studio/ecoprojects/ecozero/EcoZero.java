@@ -1,14 +1,12 @@
 package studio.ecoprojects.ecozero;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
@@ -22,17 +20,20 @@ import studio.ecoprojects.ecozero.economy.commands.BalanceTopCommand;
 import studio.ecoprojects.ecozero.economy.commands.EconomyCommand;
 import studio.ecoprojects.ecozero.economy.commands.PayCommand;
 import studio.ecoprojects.ecozero.economy.shop.commands.ShopCommand;
+import studio.ecoprojects.ecozero.economy.shop.commands.ShopManagerCommand;
 import studio.ecoprojects.ecozero.utils.DataBaseSetUp;
 import studio.ecoprojects.ecozero.utils.EcoZeroCommand;
 import studio.ecoprojects.ecozero.utils.EventUtils;
-import studio.ecoprojects.ecozero.utils.RandomUtils;
+import studio.ecoprojects.ecozero.utils.TabCompleteUtils;
 
 public final class EcoZero extends JavaPlugin {
     public static Logger logger;
     public static LuckPerms luckperms;
     private static EcoZero plugin;
     private static final List<UUID> operatorsUUIDS = new ArrayList<>();
+    private static studio.ecoprojects.ecozero.economy.Economy economy;
 
+    @SuppressWarnings("deprecation")
     public void onEnable() {
         plugin = this;
         logger = this.getLogger();
@@ -59,16 +60,28 @@ public final class EcoZero extends JavaPlugin {
             getServer().getServicesManager().register(Economy.class, new VaultSetUp(), this, ServicePriority.High);
 
             // Sets offline players on start.
-            if (RandomUtils.getOfflinePlayersNames().isEmpty()) {
+            if (TabCompleteUtils.getOfflinePlayersNames().isEmpty()) {
                 for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                    RandomUtils.addOfflinePlayerName(player.getName());
+                    TabCompleteUtils.addOfflinePlayerName(player.getName());
                 }
             }
+
+            // Sets all materials on start
+            if (TabCompleteUtils.getMaterialStrings().isEmpty()) {
+                List<String> materials = new ArrayList<>();
+                for (Material material : Material.values()) {
+                    materials.add(material.toString().toLowerCase());
+                }
+                TabCompleteUtils.setMaterialStrings(materials);
+            }
+
+            // Settting the economy class
+            economy = new studio.ecoprojects.ecozero.economy.Economy();
 
             // Gets the minute number from config and calculates it to Minecraft ticks
             long delay = 20L * (60L * getConfig().getInt("economy-saves-accounts-every"));
             // Saves every account every x (delay) minutes
-            getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            getServer().getScheduler().scheduleAsyncRepeatingTask(this, () -> {
                 SLAPI.saveAccounts();
                 reloadOperatorUUIDS();
                 logger.info("Saved economy accounts to database");
@@ -79,6 +92,10 @@ public final class EcoZero extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
+    }
+
+    public static studio.ecoprojects.ecozero.economy.Economy getEconomy() {
+        return economy;
     }
 
     private void registerListeners() {
@@ -123,6 +140,9 @@ public final class EcoZero extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("shop")).setExecutor(new ShopCommand());
         Objects.requireNonNull(getCommand("shop")).setTabCompleter(new ShopCommand());
+
+        Objects.requireNonNull(getCommand("shopmanager")).setExecutor(new ShopManagerCommand());
+        Objects.requireNonNull(getCommand("shopmanager")).setTabCompleter(new ShopManagerCommand());
 
         Objects.requireNonNull(getCommand("economy")).setExecutor(new EconomyCommand());
         Objects.requireNonNull(getCommand("economy")).setTabCompleter(new EconomyCommand());

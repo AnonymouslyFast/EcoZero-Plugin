@@ -37,18 +37,18 @@ public class PayCommand implements CommandExecutor, TabCompleter {
                         if (amount <= 0) {
                             player.sendMessage(getHelpMessage());
                         } else {
-                            if (Economy.getBalance(player.getUniqueId()) < amount) {
+                            if (EcoZero.getEconomy().getBalance(player.getUniqueId()) < amount) {
                                 player.sendMessage(Colors.translateCodes(prefix + " &fYou cannot afford this!"));
                             } else {
                                 String formattedAmount = NumberFormat.getNumberInstance().format(amount);
                                 player.sendMessage(Colors.translateCodes(prefix + " &fSuccessfully paid " + target.getName() + " &2&l$&f" + formattedAmount + "."));
                                 target.sendMessage(Colors.translateCodes(prefix + " &fYou were paid &2&l$&f" + formattedAmount + " by " + player.getName() + "."));
 
-                                Double targetBalance = Economy.getBalance(target.getUniqueId()) + amount;
-                                Double playerBalance = Economy.getBalance(player.getUniqueId()) - amount;
+                                Double targetBalance = EcoZero.getEconomy().getBalance(target.getUniqueId()) + amount;
+                                Double playerBalance = EcoZero.getEconomy().getBalance(player.getUniqueId()) - amount;
 
-                                Economy.setBalance(player.getUniqueId(), playerBalance);
-                                Economy.setBalance(target.getUniqueId(), targetBalance);
+                                EcoZero.getEconomy().setBalance(player.getUniqueId(), playerBalance);
+                                EcoZero.getEconomy().setBalance(target.getUniqueId(), targetBalance);
                             }
                         }
                     }

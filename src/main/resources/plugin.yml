@@ -32,3 +32,6 @@ commands:
   shop:
     usage: /shop
     description: Opens a shop inventory to the sender
+  shopmanager:
+      usage: /shop help
+      description: Manager for shop, create subshops, add items and more.

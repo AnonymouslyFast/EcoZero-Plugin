@@ -4,6 +4,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.economy.database.EconomyDB;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public class VaultSetUp implements Economy {
 
     @Override
     public double getBalance(String s) {
-        return studio.ecoprojects.ecozero.economy.Economy.getBalance(UUID.fromString(s));
+        return EcoZero.getEconomy().getBalance(UUID.fromString(s));
     }
 
     @Override
@@ -107,7 +108,7 @@ public class VaultSetUp implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(String s, double v) {
-        studio.ecoprojects.ecozero.economy.Economy.setBalance(UUID.fromString(s), getBalance(s) - v);
+        EcoZero.getEconomy().setBalance(UUID.fromString(s), getBalance(s) - v);
         return new EconomyResponse(v, getBalance(s), EconomyResponse.ResponseType.SUCCESS, null);
     }
 
@@ -128,7 +129,7 @@ public class VaultSetUp implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(String s, double v) {
-        studio.ecoprojects.ecozero.economy.Economy.setBalance(UUID.fromString(s), getBalance(s) + v);
+        EcoZero.getEconomy().setBalance(UUID.fromString(s), getBalance(s) + v);
         return new EconomyResponse(v, getBalance(s), EconomyResponse.ResponseType.SUCCESS, null);
     }
 

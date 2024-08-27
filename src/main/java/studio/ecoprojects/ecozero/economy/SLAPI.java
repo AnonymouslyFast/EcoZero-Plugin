@@ -12,18 +12,18 @@ public class SLAPI {
 
         if (EconomyDB.getBalance(player.getUniqueId().toString()).isEmpty()) {
             EcoZero.logger.info("Could not find account for " + player.getName());
-            Economy.createAccount(player.getUniqueId());
+            EcoZero.getEconomy().createAccount(player.getUniqueId());
         } else {
             Double balance = EconomyDB.getBalance(player.getUniqueId().toString()).get();
-            Economy.setBalance(player.getUniqueId(), balance);
+            EcoZero.getEconomy().setBalance(player.getUniqueId(), balance);
             EcoZero.logger.info("Loaded account for " + player.getName());
         }
     }
 
     public static void saveAccounts() {
-        for (UUID uuid : Economy.getBalanceKeySet()) {
+        for (UUID uuid : EcoZero.getEconomy().getBalanceKeySet()) {
             EconomyDB.removeAccount(uuid.toString());
-            EconomyDB.addAccount(uuid.toString(), Economy.getBalance(uuid));
+            EconomyDB.addAccount(uuid.toString(), EcoZero.getEconomy().getBalance(uuid));
         }
     }
 

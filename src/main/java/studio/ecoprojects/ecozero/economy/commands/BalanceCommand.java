@@ -9,10 +9,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import studio.ecoprojects.ecozero.economy.BalanceFormatter;
-import studio.ecoprojects.ecozero.economy.Economy;
+import studio.ecoprojects.ecozero.EcoZero;
 import studio.ecoprojects.ecozero.utils.Colors;
-import studio.ecoprojects.ecozero.utils.RandomUtils;
+import studio.ecoprojects.ecozero.utils.TabCompleteUtils;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -35,8 +34,8 @@ public class BalanceCommand implements CommandExecutor, TabCompleter {
                 }
             }
             if (target == null) target = player;
-            if (Economy.getBalance(player.getUniqueId()) != null) {
-                String balanace = NumberFormat.getNumberInstance().format(Economy.getBalance(target.getUniqueId()));
+            if (EcoZero.getEconomy().getBalance(player.getUniqueId()) != null) {
+                String balanace = NumberFormat.getNumberInstance().format(EcoZero.getEconomy().getBalance(target.getUniqueId()));
                 player.sendMessage(Colors.translateCodes("&2&l" + target.getName() + "'s balance is: $&f" + balanace));
             } else {
                 player.sendMessage(Colors.translateCodes("&cThat player does not have an Account"));
@@ -51,7 +50,7 @@ public class BalanceCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
 
         if (strings.length == 1) {
-            return RandomUtils.getOfflinePlayersNames();
+            return TabCompleteUtils.getOfflinePlayersNames();
         }
 
         return null;
